@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritual Unofficial Faucet</title>
+    <style>
+        :root {
+            --ritual-green: #00ff88;
+        }
+        body {
+            background-color: #0a0a0a;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* حاوية الشعار والنيران */
+        .header-container {
+            text-align: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .logo-placeholder {
+            font-size: 80px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 20px var(--ritual-green);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* تصميم النيران الخضراء المتحركة */
+        .fire-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: -20px;
+        }
+
+        .flame {
+            width: 30px;
+            height: 30px;
+            background: var(--ritual-green);
+            border-radius: 50% 50% 20% 50%;
+            transform: rotate(-45deg);
+            filter: blur(5px);
+            animation: burn 1.5s infinite alternate;
+            box-shadow: 0 0 20px var(--ritual-green);
+        }
+
+        @keyframes burn {
+            0% { transform: rotate(-45deg) scale(1); opacity: 0.8; }
+            100% { transform: rotate(-45deg) scale(1.3) translateY(-10px); opacity: 1; }
+        }
+
+        h1 {
+            color: var(--ritual-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        .faucet-card {
+            background: #1a1a1a;
+            padding: 40px;
+            border: 2px solid var(--ritual-green);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+            text-align: center;
+            width: 350px;
+            z-index: 10;
+        }
+
+        input {
+            background: #000;
+            border: 1px solid var(--ritual-green);
+            padding: 12px;
+            color: var(--ritual-green);
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        button {
+            background: var(--ritual-green);
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            display: none;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: white;
+            box-shadow: 0 0 20px white;
+        }
+
+        .hint { font-size: 0.8rem; color: #888; }
+    </style>
+</head>
+<body>
+
+    <div class="fire-container">
+        <div class="flame"></div>
+        <div class="flame" style="animation-delay: 0.2s"></div>
+        <div class="flame" style="animation-delay: 0.4s"></div>
+    </div>
+
+    <div class="header-container">
+        <div class="logo-placeholder">RITUAL</div>
+        <h1>Unofficial Ritual Faucet</h1>
+    </div>
+
+    <div class="faucet-card">
+        <p>To claim your testnet tokens, you must type the secret word below:</p>
+        
+        <input type="text" id="magicWord" placeholder="Enter 'gritual' to ignite..." oninput="verify()">
+        
+        <button id="burnBtn" onclick="startClaim()">Claim evrey token</button>
+        
+        <p id="msg" class="hint">Waiting for the magic word...</p>
+    </div>
+
+    <script>
+        function verify() {
+            const val = document.getElementById('magicWord').value.toLowerCase();
+            const btn = document.getElementById('burnBtn');
+            const msg = document.getElementById('msg');
+
+            if(val === "gritual") {
+                btn.style.display = "block";
+                msg.innerText = "The flame is ready!";
+                msg.style.color = "#00ff88";
+            } else {
+                btn.style.display = "none";
+                msg.innerText = "Waiting for the magic word...";
+                msg.style.color = "#888";
+            }
+        }
+
+        function startClaim() {
+            alert("Transaction sent! Check anthor one later.");
+        }
+    </script>
+</body>
+</html>
