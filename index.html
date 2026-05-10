@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritual Lightning Ceremony</title>
+    <title>Ritual Energy Faucet</title>
     <style>
         :root {
             --ritual-green: #00ff88;
@@ -17,7 +17,7 @@
             height: 100%;
             background-color: var(--dark-bg);
             color: white;
-            font-family: 'Cinzel', serif;
+            font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
         }
 
@@ -32,20 +32,21 @@
             z-index: 5;
         }
 
-        /* الشعار المشع والمتحرك */
+        /* الشعار النابض */
         .logo-container {
             position: relative;
             z-index: 10;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             animation: logo-pulse 3s infinite ease-in-out;
         }
 
         .ritual-logo {
-            width: 130px;
-            height: 130px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 4px solid var(--ritual-green);
-            box-shadow: 0 0 50px var(--ritual-green), inset 0 0 20px var(--ritual-green);
+            box-shadow: 0 0 50px var(--ritual-green);
+            background: #000;
         }
 
         @keyframes logo-pulse {
@@ -54,59 +55,58 @@
             100% { transform: scale(1); filter: brightness(1) drop-shadow(0 0 10px var(--ritual-green)); }
         }
 
-        /* الواجهة الزجاجية الجميلة */
+        /* واجهة المستخدم الزجاجية */
         .faucet-card {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 20px;
-            padding: 50px;
-            width: 400px;
+            border-radius: 15px;
+            padding: 40px;
+            width: 360px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             z-index: 10;
             position: relative;
         }
 
-        /* خانة الكتابة الأنيقة */
         .input-group {
             position: relative;
-            margin: 30px 0;
+            margin: 25px 0;
         }
 
         input {
             width: 100%;
             padding: 15px;
-            background: transparent;
+            background: rgba(0,0,0,0.5);
             border: none;
             border-bottom: 2px solid var(--ritual-green);
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             text-align: center;
             outline: none;
             transition: 0.5s;
-            letter-spacing: 2px;
+            box-sizing: border-box;
         }
 
         input:focus {
             border-bottom: 2px solid #fff;
-            box-shadow: 0 10px 20px -10px var(--ritual-green);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2);
         }
 
-        /* أزرار المطالبة */
+        /* الزر المشتعل */
         .btn-claim {
             background: var(--ritual-green);
             color: black;
             border: none;
-            padding: 15px 40px;
+            padding: 15px;
             font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            display: none;
             width: 100%;
             border-radius: 5px;
+            display: none; /* يظهر عند كتابة الكلمة */
+            transition: 0.3s;
+            letter-spacing: 1px;
         }
 
         .btn-claim:hover {
@@ -114,43 +114,45 @@
             box-shadow: 0 0 30px white;
         }
 
-        /* الشموع (برمجية) */
-        .candles-row {
+        /* الشموع في الأسفل */
+        .candles-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 0;
             width: 100%;
             display: flex;
             justify-content: space-around;
             z-index: 2;
+            padding-bottom: 10px;
         }
 
         .candle {
-            width: 20px;
-            height: 60px;
-            background: #222;
+            width: 15px;
+            height: 45px;
+            background: #111;
             position: relative;
+            border-radius: 2px;
         }
 
         .flame {
             position: absolute;
-            top: -20px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 15px;
-            height: 25px;
+            width: 10px;
+            height: 18px;
             background: var(--ritual-green);
             border-radius: 50% 50% 20% 20%;
-            filter: blur(2px);
+            filter: blur(1px);
             animation: flicker 0.1s infinite alternate;
+            box-shadow: 0 0 10px var(--ritual-green);
         }
 
         @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
-            100% { transform: translateX(-52%) scale(1.1); opacity: 1; }
+            0% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+            100% { transform: translateX(-52%) scale(1.2); opacity: 1; }
         }
 
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -159,111 +161,103 @@
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         
         <div class="logo-container">
+            <!-- شعارك المفضل -->
             <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
         </div>
 
         <div class="faucet-card">
-            <h1 style="margin:0; color: var(--ritual-green); font-size: 1.2rem;">THE SACRED ENERGY</h1>
-            <p style="font-size: 10px; color: #666;">BRING LIFE TO EVREY NODE</p>
+            <h1 style="margin:0; color: var(--ritual-green); font-size: 1.4rem; letter-spacing: 3px;">THE RITUAL</h1>
+            <p style="font-size: 11px; color: #888; margin-top: 5px;">IGNITE EVREY NODE IN THE NETWORK</p>
             
             <div class="input-group">
-                <input type="text" id="ritualInput" placeholder="ENTER SECRET WORD..." oninput="check()">
+                <input type="text" id="ritualInput" placeholder="TYPE 'gritual' TO START" oninput="checkInput()">
             </div>
 
-            <button id="claimBtn" class="btn-claim" onclick="alert('Ritual Power Sent!')">CLAIM EVREY TOKEN</button>
+            <button id="claimBtn" class="btn-claim" onclick="startBlockchainRitual()">CLAIM EVREY TOKEN</button>
             
-            <p style="font-size: 9px; color: #333; margin-top: 20px;">ANTHOR ERA BEGINS NOW</p>
+            <p style="font-size: 9px; color: #444; margin-top: 20px;">ANTHOR DROP IS COMING SOON</p>
         </div>
     </div>
 
-    <!-- صف الشموع -->
-    <div class="candles-row" id="candles"></div>
+    <!-- صف الشموع المشتعلة -->
+    <div class="candles-container" id="candleRack"></div>
 
     <script>
-        // كود البرق المتموج (JS Canvas)
+        // 1. كود البرق المتموج
         const canvas = document.getElementById('lightning-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        function createLightning() {
+        function drawLightning() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (Math.random() > 0.94) { // احتمالية ضرب البرق
+            if (Math.random() > 0.96) {
                 let x = Math.random() * canvas.width;
-                let y = 0;
                 ctx.strokeStyle = '#00ff88';
                 ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-
-                for (let i = 0; i < 20; i++) {
-                    x += (Math.random() - 0.5) * 60;
-                    y += Math.random() * (canvas.height / 15);
-                    ctx.lineTo(x, y);
-                }
-                ctx.shadowBlur = 30;
+                ctx.shadowBlur = 20;
                 ctx.shadowColor = '#00ff88';
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+
+                for (let i = 0; i < 15; i++) {
+                    x += (Math.random() - 0.5) * 50;
+                    ctx.lineTo(x, (canvas.height / 15) * (i + 1));
+                }
                 ctx.stroke();
                 
-                // وميض الشاشة عند ضرب البرق
-                document.body.style.backgroundColor = '#0a2215';
-                setTimeout(() => { document.body.style.backgroundColor = '#050505'; }, 50);
+                // وميض الشاشة
+                document.body.style.backgroundColor = '#0a1a11';
+                setTimeout(() => { document.body.style.backgroundColor = '#050505'; }, 60);
             }
-            requestAnimationFrame(createLightning);
+            requestAnimationFrame(drawLightning);
         }
-        createLightning();
+        drawLightning();
 
-        // إضافة الشموع
-        const candleContainer = document.getElementById('candles');
-        for (let i = 0; i < 12; i++) {
-            candleContainer.innerHTML += `<div class="candle"><div class="flame"></div></div>`;
+        // 2. إنشاء الشموع برمجياً
+        const candleRack = document.getElementById('candleRack');
+        for (let i = 0; i < 15; i++) {
+            candleRack.innerHTML += `<div class="candle"><div class="flame"></div></div>`;
         }
 
-        function check() {
+        // 3. التحقق من الكلمة السرية
+        function checkInput() {
             const val = document.getElementById('ritualInput').value.toLowerCase();
             const btn = document.getElementById('claimBtn');
             btn.style.display = (val === "gritual") ? "block" : "none";
         }
+
+        // 4. ربط MetaMask والحصول على العملات
+        async function startBlockchainRitual() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const userWallet = accounts[0];
+                    
+                    const btn = document.getElementById('claimBtn');
+                    btn.innerText = "TRANSFERING ENERGY...";
+                    btn.disabled = true;
+
+                    // محاكاة إرسال العملات
+                    setTimeout(() => {
+                        alert("The ritual was successful!\nTokens sent to: " + userWallet + "\nEvrey soul is satisfied.");
+                        btn.innerText = "SUCCESSFUL";
+                        btn.style.background = "#ffffff";
+                    }, 3000);
+
+                } catch (err) {
+                    alert("The ritual needs your wallet to proceed.");
+                }
+            } else {
+                alert("Please install MetaMask to complete the ritual!");
+            }
+        }
+
+        // تحديث حجم الكانفاس عند تغيير حجم الشاشة
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
-
-// هذا الكود يوضع داخل <script> في أسفل ملف index.html
-async function check() {
-    const val = document.getElementById('ritualInput').value.toLowerCase();
-    const btn = document.getElementById('claimBtn');
-    
-    // إذا كتب المستخدم الكلمة السرية يظهر الزر
-    if(val === "gritual") {
-        btn.style.display = "block";
-    } else {
-        btn.style.display = "none";
-    }
-}
-
-async function startRitual() {
-    // 1. التأكد من وجود MetaMask
-    if (window.ethereum) {
-        try {
-            // 2. طلب إذن لربط المحفظة
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const address = accounts[0];
-            
-            // 3. تغيير شكل الزر لإعطاء حماس للمستخدم
-            const btn = document.getElementById('claimBtn');
-            btn.innerText = "SENDING EVREY TOKEN...";
-            btn.style.background = "#ffffff";
-            
-            // محاكاة إرسال الطاقة (هنا تربطها بعقدك الذكي لاحقاً)
-            setTimeout(() => {
-                alert("The Ritual is complete! Tokens sent to: " + address);
-                btn.innerText = "SUCCESSFUL";
-            }, 3000);
-
-        } catch (error) {
-            alert("Ritual failed: You must connect your wallet.");
-        }
-    } else {
-        alert("No magical wallet found. Please install MetaMask!");
-    }
-}
