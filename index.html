@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritual Secret Faucet</title>
+    <title>Ritual Ultimate Faucet</title>
     <style>
         :root {
             --ritual-green: #00ff88;
-            --flame-glow: rgba(0, 255, 136, 0.6);
+            --fire-shadow: rgba(0, 255, 136, 0.5);
         }
 
         body, html {
@@ -16,43 +16,36 @@
             width: 100%;
             height: 100%;
             background-color: #000;
-            font-family: 'Cinzel', serif; /* خط يوحي بالطقوس القديمة */
+            font-family: 'Cinzel', serif;
             color: white;
             overflow: hidden;
         }
 
-        /* خلفية سينمائية: شخص يرتدي لباس طقوس مع نيران خضراء */
-        .background-shroud {
+        /* الخلفية: الشخص الذي يلبس لباس الطقوس ويرفع يديه */
+        .shaman-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* استخدام صورة تعبيرية تمثل الطقوس والنيران الخضراء */
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=2070&auto=format&fit=crop'); 
+            /* صورة تعبيرية قوية لشخص يرفع يديه للسماء */
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, transparent 50%),
+                        url('https://cdn.pixabay.com/photo/2017/08/15/15/44/magic-2644400_1280.jpg');
             background-size: cover;
             background-position: center;
-            filter: grayscale(0.5) contrast(1.2);
             z-index: -2;
+            filter: hue-rotate(90deg) brightness(0.8); /* تحويل الألوان للأخضر السحري */
         }
 
-        /* طبقة النيران الخضراء المتحركة (الفلتر) */
-        .green-fire-overlay {
+        /* طبقة النيران الخضراء المتصاعدة */
+        .fire-particles {
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at bottom, var(--flame-glow) 0%, transparent 70%);
-            mix-blend-mode: screen;
-            animation: flicker 3s infinite alternate;
             z-index: -1;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.4; transform: scale(1); }
-            100% { opacity: 0.8; transform: scale(1.05); }
+            pointer-events: none;
         }
 
         .main-content {
@@ -61,122 +54,136 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            text-align: center;
-            z-index: 10;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 80%);
         }
 
-        /* الشعار الذي أرسلته مع توهج أخضر */
-        .ritual-logo-main {
-            width: 150px;
-            height: 150px;
+        /* الشعار المطلوب */
+        .ritual-logo {
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            border: 3px solid var(--ritual-green);
-            box-shadow: 0 0 50px var(--ritual-green);
+            border: 4px solid var(--ritual-green);
+            box-shadow: 0 0 40px var(--ritual-green);
             margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px var(--ritual-green); }
-            50% { box-shadow: 0 0 60px var(--ritual-green); }
-            100% { box-shadow: 0 0 20px var(--ritual-green); }
-        }
-
-        .faucet-ui {
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid var(--ritual-green);
-            padding: 40px;
-            border-radius: 5px; /* حواف حادة لتبدو أكثر جدية */
-            box-shadow: inset 0 0 20px var(--flame-glow);
-            max-width: 450px;
+            position: relative;
+            z-index: 20;
         }
 
         h1 {
-            letter-spacing: 8px;
+            letter-spacing: 10px;
             color: var(--ritual-green);
-            font-size: 1.8rem;
-            margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--ritual-green);
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .faucet-box {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--ritual-green);
+            padding: 40px;
+            border-radius: 0; /* حواف حادة لأسلوب الطقوس */
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+            backdrop-filter: blur(8px);
+            width: 400px;
+            text-align: center;
         }
 
         input {
             width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid var(--ritual-green);
-            color: white;
-            font-size: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid var(--ritual-green);
+            color: var(--ritual-green);
+            padding: 15px;
+            font-size: 18px;
             text-align: center;
-            padding: 10px;
-            margin-bottom: 30px;
+            margin: 20px 0;
             outline: none;
+            box-sizing: border-box;
         }
 
         .claim-btn {
+            width: 100%;
+            padding: 15px;
             background: var(--ritual-green);
-            color: black;
+            color: #000;
             border: none;
-            padding: 15px 40px;
             font-weight: bold;
             font-size: 1.2rem;
             cursor: pointer;
             display: none;
-            transition: 0.5s;
             text-transform: uppercase;
+            transition: 0.3s;
         }
 
         .claim-btn:hover {
-            background: white;
-            letter-spacing: 3px;
+            background: #fff;
+            box-shadow: 0 0 30px #fff;
         }
 
-        /* إضافة شخصية الطقوس (Shadow Figure) */
-        .shaman-figure {
+        /* حركة النيران الجزيئية */
+        .particle {
             position: absolute;
-            bottom: 0;
-            right: 5%;
-            height: 70%;
-            opacity: 0.4;
-            pointer-events: none;
+            background: var(--ritual-green);
+            border-radius: 50%;
+            filter: blur(10px);
+            opacity: 0.5;
+            animation: rise infinite linear;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.5; }
+            100% { transform: translateY(-100vh) scale(2); opacity: 0; }
         }
     </style>
-    <!-- استدعاء خطوط مناسبة للطقوس -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="background-shroud"></div>
-    <div class="green-fire-overlay"></div>
+    <div class="shaman-bg"></div>
+    <div class="fire-particles" id="fireContainer"></div>
 
     <div class="main-content">
-        <!-- الشعار المطلوب -->
-        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo-main" alt="Ritual Logo">
+        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
         
-        <h1>UNOFFICIAL FAUCET</h1>
+        <h1>RITUAL FAUCET</h1>
+        <p style="color: #888; letter-spacing: 3px;">UNOFFICIAL COMMUNITY NODE</p>
 
-        <div class="faucet-ui">
-            <p style="font-size: 0.9rem; color: #888;">Complete the ceremony to receive your tokens.</p>
-            
-            <input type="text" id="secretWord" placeholder="Type 'gritual'..." oninput="validate()">
-            
-            <button id="igniteBtn" class="claim-btn" onclick="finish()">Claim evrey token</button>
-            
-            <p id="hint" style="margin-top: 15px; font-size: 0.8rem;">Ready for anthor ritual?</p>
+        <div class="faucet-box">
+            <p>The ritual needs a word to begin...</p>
+            <input type="text" id="inputWord" placeholder="Enter 'gritual'" oninput="check()">
+            <button id="claimBtn" class="claim-btn" onclick="start()">Claim evrey token</button>
+            <p style="font-size: 10px; margin-top: 15px; color: #555;">Anthor claim available in 24h</p>
         </div>
     </div>
 
     <script>
-        function validate() {
-            const val = document.getElementById('secretWord').value.toLowerCase();
-            const btn = document.getElementById('igniteBtn');
+        // توليد النيران المتحركة
+        const container = document.getElementById('fireContainer');
+        for (let i = 0; i < 50; i++) {
+            let p = document.createElement('div');
+            p.className = 'particle';
+            let size = Math.random() * 50 + 10 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.bottom = "-50px";
+            p.style.animationDuration = Math.random() * 4 + 2 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(p);
+        }
+
+        function check() {
+            const val = document.getElementById('inputWord').value.toLowerCase();
+            const btn = document.getElementById('claimBtn');
             if (val === "gritual") {
-                btn.style.display = "inline-block";
+                btn.style.display = "block";
             } else {
                 btn.style.display = "none";
             }
         }
 
-        function finish() {
-            alert("The ritual is sealed. Your tokens are coming!");
+        function start() {
+            alert("Evrey drop is being sent to your wallet!");
         }
     </script>
 </body>
