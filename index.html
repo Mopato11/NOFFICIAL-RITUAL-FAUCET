@@ -14,155 +14,171 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #050505;
+            background-color: #000;
             color: white;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Cinzel', serif;
             overflow: hidden;
         }
 
-        /* حاوية مشهد الكاهن */
-        .ritual-wrap {
+        /* خلفية الكاهن مع حركة واقعية */
+        .shaman-background {
             position: fixed;
-            bottom: 0;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            background: radial-gradient(circle at bottom, rgba(0, 255, 136, 0.15) 0%, #050505 70%);
+            height: 100%;
+            background: url('https://i.ibb.co/6RTPZ0S/N6p34ztp.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: -2;
+            animation: background-pulse 8s infinite alternate ease-in-out;
         }
 
-        /* تصميم الكاهن الملحمي (SVG) */
-        .shaman-svg {
-            width: 500px;
-            height: auto;
-            z-index: 5;
-            filter: drop-shadow(0 0 20px var(--ritual-green));
-            animation: sway 4s infinite alternate ease-in-out;
+        @keyframes background-pulse {
+            0% { transform: scale(1); filter: brightness(0.7) hue-rotate(0deg); }
+            100% { transform: scale(1.05); filter: brightness(1) hue-rotate(10deg); }
         }
 
-        @keyframes sway {
-            from { transform: translateY(0px) scale(1); }
-            to { transform: translateY(-15px) scale(1.02); }
-        }
-
-        /* النيران الخضراء المتوهجة */
-        .glow-fire {
-            position: absolute;
-            bottom: 0;
+        /* طبقة النيران الخضراء المتطايرة */
+        .fire-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 300px;
-            background: linear-gradient(to top, var(--ritual-green), transparent);
-            opacity: 0.2;
-            filter: blur(80px);
-            z-index: 1;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent, rgba(0, 255, 136, 0.1));
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* واجهة المستخدم */
-        .ui-content {
-            position: absolute;
-            top: 50px;
-            width: 100%;
+        .main-ui {
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 20;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
         }
 
+        /* شعار Ritual الدائري */
         .ritual-logo {
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 3px solid var(--ritual-green);
             box-shadow: 0 0 30px var(--ritual-green);
             margin-bottom: 20px;
+            background: #000;
         }
 
         .faucet-box {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--ritual-green);
-            padding: 35px;
-            width: 350px;
-            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--ritual-green);
+            padding: 40px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+        }
+
+        h1 {
+            color: var(--ritual-green);
+            letter-spacing: 5px;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--ritual-green);
         }
 
         input {
             width: 100%;
             padding: 15px;
-            background: #111;
+            background: #000;
             border: 1px solid var(--ritual-green);
-            color: var(--ritual-green);
-            margin: 20px 0;
-            box-sizing: border-box;
-            outline: none;
+            color: white;
+            font-size: 18px;
             text-align: center;
-            font-weight: bold;
+            margin-bottom: 25px;
+            outline: none;
+            box-sizing: border-box;
         }
 
-        .btn-ignite {
+        .claim-button {
             width: 100%;
             padding: 18px;
             background: var(--ritual-green);
-            color: #000;
+            color: black;
             font-weight: bold;
             border: none;
             cursor: pointer;
             display: none;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            font-size: 1.1rem;
         }
 
-        .btn-ignite:hover { background: #fff; box-shadow: 0 0 20px #fff; }
+        .claim-button:hover {
+            background: white;
+            box-shadow: 0 0 30px white;
+        }
 
+        .particle {
+            position: absolute;
+            background: var(--ritual-green);
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0.6;
+            animation: rise 5s infinite linear;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(-100vh) scale(2); opacity: 0; }
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="ui-content">
-        <!-- الشعار الذي طلبته -->
+    <div class="shaman-background"></div>
+    <div class="fire-overlay" id="particleContainer"></div>
+
+    <div class="main-ui">
+        <!-- شعار Ritual من صفحتهم الرسمية -->
         <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
-        <h1 style="color: var(--ritual-green); letter-spacing: 5px; text-shadow: 0 0 10px var(--ritual-green);">RITUAL FAUCET</h1>
         
         <div class="faucet-box">
-            <p>Prove your devotion to the ritual.</p>
-            <input type="text" id="secret" placeholder="Type gritual..." oninput="check()">
-            <button id="claimBtn" class="btn-ignite" onclick="alert('Sent!')">Claim evrey token</button>
-            <p style="font-size: 10px; color: #444; margin-top: 15px;">Waiting for anthor drop</p>
+            <h1>UNOFFICIAL FAUCET</h1>
+            <p style="color: #888; font-size: 14px;">The shaman is calling evrey builder.</p>
+            
+            <input type="text" id="magicInput" placeholder="Type gritual..." oninput="verify()">
+            
+            <button id="claimBtn" class="claim-button" onclick="alert('Transaction sent!')">Claim evrey token</button>
+            
+            <p style="color: #444; font-size: 10px; margin-top: 15px;">Waiting for anthor drop</p>
         </div>
     </div>
 
-    <div class="ritual-wrap">
-        <div class="glow-fire"></div>
-        
-        <!-- رسم الكاهن يدوياً بالكود لضمان ظهوره -->
-        <svg class="shaman-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <!-- رداء الكاهن -->
-            <path d="M100 40 L60 180 L140 180 Z" fill="#000" stroke="#00ff88" stroke-width="1"/>
-            <!-- الرأس والغطاء -->
-            <path d="M100 30 Q115 30 115 50 Q100 60 85 50 Q85 30 100 30" fill="#000" stroke="#00ff88" stroke-width="1"/>
-            <!-- اليد اليسرى مرفوعة -->
-            <path d="M85 70 L40 30" stroke="#000" stroke-width="8" stroke-linecap="round"/>
-            <path d="M85 70 L40 30" stroke="#00ff88" stroke-width="2" stroke-linecap="round"/>
-            <!-- اليد اليمنى مرفوعة -->
-            <path d="M115 70 L160 30" stroke="#000" stroke-width="8" stroke-linecap="round"/>
-            <path d="M115 70 L160 30" stroke="#00ff88" stroke-width="2" stroke-linecap="round"/>
-            <!-- نيران تخرج من اليدين -->
-            <circle cx="40" cy="30" r="5" fill="#00ff88">
-                <animate attributeName="r" values="5;10;5" dur="1s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="160" cy="30" r="5" fill="#00ff88">
-                <animate attributeName="r" values="5;10;5" dur="1s" repeatCount="indefinite" />
-            </circle>
-        </svg>
-    </div>
-
     <script>
-        function check() {
-            const val = document.getElementById('secret').value.toLowerCase();
+        // إنشاء جزيئات نيران خضراء تطير فوق صورة الكاهن
+        const container = document.getElementById('particleContainer');
+        for (let i = 0; i < 30; i++) {
+            let p = document.createElement('div');
+            p.className = 'particle';
+            let size = Math.random() * 30 + 10 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.bottom = "-50px";
+            p.style.animationDuration = Math.random() * 3 + 2 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(p);
+        }
+
+        function verify() {
+            const val = document.getElementById('magicInput').value.toLowerCase();
             const btn = document.getElementById('claimBtn');
-            if(val === "gritual") {
+            if (val === "gritual") {
                 btn.style.display = "block";
             } else {
                 btn.style.display = "none";
