@@ -16,78 +16,75 @@
             height: 100%;
             background-color: #000;
             color: white;
-            font-family: 'Cinzel', serif;
+            font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
         }
 
-        /* خلفية الكاهن مع حركة واقعية */
-        .shaman-background {
+        /* حاوية الخلفية لضمان ظهور الصورة */
+        .background-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://i.ibb.co/6RTPZ0S/N6p34ztp.jpg') no-repeat center center;
-            background-size: cover;
             z-index: -2;
-            animation: background-pulse 8s infinite alternate ease-in-out;
+            /* استخدمت رابطاً بديلاً ومباشراً أكثر */
+            background-image: url('https://i.ibb.co/6RTPZ0S/N6p34ztp.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            animation: zoomEffect 10s infinite alternate ease-in-out;
         }
 
-        @keyframes background-pulse {
-            0% { transform: scale(1); filter: brightness(0.7) hue-rotate(0deg); }
-            100% { transform: scale(1.05); filter: brightness(1) hue-rotate(10deg); }
+        @keyframes zoomEffect {
+            from { transform: scale(1); filter: brightness(0.5) hue-rotate(0deg); }
+            to { transform: scale(1.1); filter: brightness(0.9) hue-rotate(20deg); }
         }
 
-        /* طبقة النيران الخضراء المتطايرة */
-        .fire-overlay {
+        /* نيران خضراء متحركة فوق الصورة */
+        .fire-particles {
             position: fixed;
-            top: 0;
-            left: 0;
+            bottom: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, transparent, rgba(0, 255, 136, 0.1));
+            background: radial-gradient(circle at bottom, rgba(0, 255, 136, 0.2), transparent 70%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* واجهة المستخدم */
-        .main-ui {
+        .main-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            position: relative;
-            z-index: 10;
+            background: rgba(0, 0, 0, 0.4); /* طبقة تعتيم خفيفة لإظهار النص */
         }
 
-        /* شعار Ritual الدائري */
         .ritual-logo {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 3px solid var(--ritual-green);
+            border: 4px solid var(--ritual-green);
             box-shadow: 0 0 30px var(--ritual-green);
             margin-bottom: 20px;
-            background: #000;
         }
 
-        .faucet-box {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--ritual-green);
+        .faucet-card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid var(--ritual-green);
             padding: 40px;
             width: 380px;
             text-align: center;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
         }
 
         h1 {
             color: var(--ritual-green);
             letter-spacing: 5px;
-            font-size: 1.6rem;
-            margin-bottom: 20px;
             text-shadow: 0 0 15px var(--ritual-green);
+            margin-bottom: 25px;
         }
 
         input {
@@ -98,12 +95,12 @@
             color: white;
             font-size: 18px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             outline: none;
             box-sizing: border-box;
         }
 
-        .claim-button {
+        .claim-btn {
             width: 100%;
             padding: 18px;
             background: var(--ritual-green);
@@ -113,72 +110,68 @@
             cursor: pointer;
             display: none;
             text-transform: uppercase;
-            font-size: 1.1rem;
         }
 
-        .claim-button:hover {
-            background: white;
-            box-shadow: 0 0 30px white;
-        }
+        .claim-btn:hover { background: white; box-shadow: 0 0 30px white; }
 
-        .particle {
+        /* جزيئات النيران */
+        .dot {
             position: absolute;
             background: var(--ritual-green);
             border-radius: 50%;
-            filter: blur(5px);
+            filter: blur(4px);
             opacity: 0.6;
-            animation: rise 5s infinite linear;
+            animation: moveUp 4s infinite linear;
         }
 
-        @keyframes rise {
+        @keyframes moveUp {
             0% { transform: translateY(0) scale(1); opacity: 0; }
-            50% { opacity: 0.7; }
+            50% { opacity: 0.8; }
             100% { transform: translateY(-100vh) scale(2); opacity: 0; }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="shaman-background"></div>
-    <div class="fire-overlay" id="particleContainer"></div>
+    <!-- حاوية الصورة -->
+    <div class="background-container"></div>
+    <div class="fire-particles" id="fireWrap"></div>
 
-    <div class="main-ui">
-        <!-- شعار Ritual من صفحتهم الرسمية -->
+    <div class="main-content">
         <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
         
-        <div class="faucet-box">
-            <h1>UNOFFICIAL FAUCET</h1>
-            <p style="color: #888; font-size: 14px;">The shaman is calling evrey builder.</p>
+        <div class="faucet-card">
+            <h1>RITUAL FAUCET</h1>
+            <p style="color: #aaa; margin-bottom: 20px;">The Shaman is waiting for evrey soul.</p>
             
-            <input type="text" id="magicInput" placeholder="Type gritual..." oninput="verify()">
+            <input type="text" id="magicWord" placeholder="Type gritual..." oninput="verify()">
             
-            <button id="claimBtn" class="claim-button" onclick="alert('Transaction sent!')">Claim evrey token</button>
+            <button id="claimBtn" class="claim-btn" onclick="alert('The ritual is complete!')">Claim evrey token</button>
             
-            <p style="color: #444; font-size: 10px; margin-top: 15px;">Waiting for anthor drop</p>
+            <p style="font-size: 10px; color: #444; margin-top: 15px;">Waiting for anthor drop</p>
         </div>
     </div>
 
     <script>
-        // إنشاء جزيئات نيران خضراء تطير فوق صورة الكاهن
-        const container = document.getElementById('particleContainer');
-        for (let i = 0; i < 30; i++) {
-            let p = document.createElement('div');
-            p.className = 'particle';
-            let size = Math.random() * 30 + 10 + 'px';
-            p.style.width = size;
-            p.style.height = size;
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.bottom = "-50px";
-            p.style.animationDuration = Math.random() * 3 + 2 + 's';
-            p.style.animationDelay = Math.random() * 5 + 's';
-            container.appendChild(p);
+        // كود النيران المتطايرة
+        const wrap = document.getElementById('fireWrap');
+        for (let i = 0; i < 40; i++) {
+            let dot = document.createElement('div');
+            dot.className = 'dot';
+            let size = Math.random() * 20 + 5 + 'px';
+            dot.style.width = size;
+            dot.style.height = size;
+            dot.style.left = Math.random() * 100 + 'vw';
+            dot.style.bottom = "-20px";
+            dot.style.animationDuration = Math.random() * 3 + 2 + 's';
+            dot.style.animationDelay = Math.random() * 5 + 's';
+            wrap.appendChild(dot);
         }
 
         function verify() {
-            const val = document.getElementById('magicInput').value.toLowerCase();
+            const val = document.getElementById('magicWord').value.toLowerCase();
             const btn = document.getElementById('claimBtn');
-            if (val === "gritual") {
+            if(val === "gritual") {
                 btn.style.display = "block";
             } else {
                 btn.style.display = "none";
