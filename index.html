@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritual Mystical Altar</title>
+    <title>Ritual Lightning Faucet</title>
     <style>
         :root {
             --ritual-green: #00ff88;
@@ -19,65 +19,49 @@
             color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* البرق الأخضر */
+        /* تأثير البرق الأخضر */
         .lightning {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 100;
+            background: white;
             opacity: 0;
+            z-index: 99;
+            pointer-events: none;
         }
 
-        @keyframes flash {
-            0%, 90%, 100% { opacity: 0; }
-            92% { opacity: 0.3; background-color: var(--ritual-green); }
-            94% { opacity: 0.1; }
-            96% { opacity: 0.5; background-color: white; }
-        }
-
-        .lightning-active {
-            animation: flash 5s infinite;
-        }
-
-        /* الشعار المشعل */
+        /* الشعار المشع والمتحرك */
         .logo-container {
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: float 4s infinite ease-in-out;
         }
 
         .main-logo {
-            width: 130px;
-            height: 130px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             border: 4px solid var(--ritual-green);
+            box-shadow: 0 0 50px var(--ritual-green), inset 0 0 30px var(--ritual-green);
+            z-index: 10;
             position: relative;
-            z-index: 5;
-            box-shadow: 0 0 20px var(--ritual-green);
-            animation: pulse 2s infinite alternate;
         }
 
-        @keyframes pulse {
-            from { transform: scale(1); box-shadow: 0 0 20px var(--ritual-green); }
-            to { transform: scale(1.05); box-shadow: 0 0 40px var(--ritual-green), 0 0 60px #00ff8866; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); filter: brightness(1); }
+            50% { transform: translateY(-20px) rotate(5deg); filter: brightness(1.5); }
         }
 
-        /* الشموع والنيران */
-        .candles-container {
-            position: absolute;
-            width: 100%;
-            bottom: 20px;
+        /* تصميم الشموع البرمجية */
+        .candles-row {
             display: flex;
-            justify-content: space-around;
-            padding: 0 50px;
-            box-sizing: border-box;
+            gap: 100px;
+            position: absolute;
+            bottom: 20px;
         }
 
         .candle {
@@ -90,7 +74,7 @@
 
         .flame {
             position: absolute;
-            top: -25px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
             width: 15px;
@@ -103,28 +87,21 @@
         }
 
         @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
-            100% { transform: translateX(-52%) scale(1.1); opacity: 1; }
+            0% { transform: translateX(-55%) scale(1); opacity: 0.8; }
+            100% { transform: translateX(-45%) scale(1.1); opacity: 1; }
         }
 
-        /* واجهة الإدخال الجميلة */
-        .altar-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            padding: 50px;
+        /* خانة الإدخال الاحترافية */
+        .faucet-ui {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--ritual-green);
+            padding: 40px;
             border-radius: 20px;
-            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 100px rgba(0, 255, 136, 0.1);
             width: 400px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            z-index: 10;
-        }
-
-        h2 {
-            letter-spacing: 6px;
-            color: var(--ritual-green);
-            margin-top: 0;
-            font-weight: 300;
+            text-align: center;
+            z-index: 20;
         }
 
         .input-group {
@@ -135,111 +112,109 @@
         input {
             width: 100%;
             padding: 15px;
-            background: rgba(0,0,0,0.4);
+            background: transparent;
             border: none;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid var(--ritual-green);
             color: white;
-            font-size: 18px;
-            outline: none;
-            transition: 0.4s;
+            font-size: 20px;
             text-align: center;
+            outline: none;
             letter-spacing: 2px;
+            transition: 0.3s;
         }
 
         input:focus {
-            border-bottom-color: var(--ritual-green);
-            background: rgba(0, 255, 136, 0.05);
+            border-bottom: 2px solid white;
+            text-shadow: 0 0 10px var(--ritual-green);
         }
 
+        /* زر المطالبة */
         .btn-ritual {
-            width: 100%;
-            padding: 18px;
-            background: transparent;
-            border: 2px solid var(--ritual-green);
-            color: var(--ritual-green);
+            background: var(--ritual-green);
+            color: black;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
             font-weight: bold;
-            cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            transition: 0.3s;
+            cursor: pointer;
+            transition: 0.4s;
             display: none;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.3);
         }
 
         .btn-ritual:hover {
-            background: var(--ritual-green);
-            color: black;
-            box-shadow: 0 0 30px var(--ritual-green);
-        }
-
-        /* نيران مشتعلة في الأسفل */
-        .floor-fire {
-            position: fixed;
-            bottom: -50px;
-            width: 100%;
-            height: 150px;
-            background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.2) 0%, transparent 70%);
-            filter: blur(20px);
+            transform: scale(1.05);
+            background: white;
+            box-shadow: 0 0 40px white;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="lightning lightning-active"></div>
+    <div class="lightning" id="lightningFlash"></div>
 
-    <div class="main-container">
-        <div class="altar-card">
-            <div class="logo-container">
-                <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="main-logo">
-            </div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        
+        <div class="logo-container">
+            <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="main-logo">
+        </div>
+
+        <div class="faucet-ui">
+            <h1 style="margin: 0; letter-spacing: 8px; color: var(--ritual-green);">RITUAL</h1>
+            <p style="color: #666; font-size: 12px; margin-top: 10px;">HARNESS THE GREEN POWER</p>
             
-            <h2>RITUAL</h2>
-            <p style="color: #666; font-size: 12px;">EVREY BUILDER IS WELCOME</p>
-
             <div class="input-group">
-                <input type="text" id="ritualInput" placeholder="ENTER SECRET WORD" oninput="check()">
+                <input type="text" id="userInput" placeholder="ENTER SECRET WORD" oninput="check()">
             </div>
 
-            <button id="claimBtn" class="btn-ritual" onclick="ignite()">Ignite Ritual</button>
-            
-            <p style="color: #333; font-size: 10px; margin-top: 20px;">Waiting for anthor block...</p>
+            <button id="claimBtn" class="btn-ritual" onclick="startRitual()">CLAIM EVREY TOKEN</button>
+            <p style="font-size: 10px; color: #333; margin-top: 20px;">ANTHOR BLOCKCHAIN IS RISING</p>
+        </div>
+
+        <!-- شموع في الأسفل -->
+        <div class="candles-row">
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
         </div>
     </div>
 
-    <!-- الشموع -->
-    <div class="candles-container">
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-    </div>
-
-    <div class="floor-fire"></div>
-
     <script>
+        // كود ضربات البرق الأخضر العشوائية
+        function strike() {
+            const flash = document.getElementById('lightningFlash');
+            const chance = Math.random();
+            if (chance > 0.97) {
+                flash.style.background = "rgba(0, 255, 136, 0.4)";
+                flash.style.opacity = "1";
+                setTimeout(() => { flash.style.opacity = "0"; }, 50);
+                setTimeout(() => { flash.style.opacity = "0.8"; }, 100);
+                setTimeout(() => { flash.style.opacity = "0"; }, 200);
+            }
+            requestAnimationFrame(strike);
+        }
+        strike();
+
         function check() {
-            const val = document.getElementById('ritualInput').value.toLowerCase();
+            const val = document.getElementById('userInput').value.toLowerCase();
             const btn = document.getElementById('claimBtn');
-            if(val === "gritual") {
-                btn.style.display = "block";
-            } else {
-                btn.style.display = "none";
-            }
+            btn.style.display = (val === "gritual") ? "block" : "none";
         }
 
-        function ignite() {
-            alert("The ritual has begun! Check your wallet for evrey token.");
+        function startRitual() {
+            const flash = document.getElementById('lightningFlash');
+            flash.style.background = "white";
+            flash.style.opacity = "1";
+            setTimeout(() => { 
+                flash.style.opacity = "0";
+                alert("The ritual was successful! Check your wallet for evrey token.");
+            }, 500);
         }
-
-        // كود لجعل البرق يضرب بشكل عشوائي
-        setInterval(() => {
-            if(Math.random() > 0.7) {
-                document.querySelector('.lightning').style.animation = 'none';
-                setTimeout(() => {
-                    document.querySelector('.lightning').style.animation = 'flash 0.5s ease-out';
-                }, 10);
-            }
-        }, 3000);
     </script>
 </body>
 </html>
