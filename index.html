@@ -2,69 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ritual Free Faucet</title>
+    <title>Ritual Public Faucet</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
-        :root { --green: #00ff88; }
-        body { margin: 0; background: #050505; color: white; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .card { background: #000; padding: 30px; border: 1px solid var(--green); border-radius: 15px; width: 350px; text-align: center; box-shadow: 0 0 20px var(--green); }
-        input { width: 100%; padding: 12px; background: #111; border: none; border-bottom: 2px solid var(--green); color: white; margin: 20px 0; text-align: center; outline: none; }
-        .btn { width: 100%; padding: 15px; background: var(--green); color: black; font-weight: bold; border: none; cursor: pointer; display: none; text-transform: uppercase; }
-        #status { font-size: 11px; margin-top: 15px; color: var(--green); }
+        :root { --neon: #00ff88; }
+        body { margin: 0; background: #050505; color: white; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .card { background: #000; padding: 30px; border: 1px solid var(--neon); border-radius: 15px; width: 360px; text-align: center; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
+        input { width: 100%; padding: 12px; background: #111; border: none; border-bottom: 2px solid var(--neon); color: white; margin: 15px 0; text-align: center; outline: none; }
+        .btn { width: 100%; padding: 15px; background: var(--neon); color: black; font-weight: bold; border: none; cursor: pointer; display: none; border-radius: 5px; }
+        #log { font-size: 10px; margin-top: 15px; color: var(--neon); min-height: 20px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 style="letter-spacing: 3px;">RITUAL GATE</h2>
-        <input type="text" id="pass" placeholder="TYPE gritual..." oninput="check()">
-        <button id="claimBtn" class="btn" onclick="startClaim()">CLAIM 0.005 RITL</button>
-        <p id="status">Ready to summon energy...</p>
+        <h2 style="letter-spacing: 2px;">RITUAL GATE</h2>
+        <p style="font-size: 10px; color: #666;">FREE 0.005 RITL FOR PILOTS</p>
+        <input type="text" id="pass" placeholder="Type gritual..." oninput="check()">
+        <button id="claimBtn" class="btn" onclick="distribute()">CLAIM ENERGY</button>
+        <p id="log">Awaiting Ritual...</p>
     </div>
 
     <script>
-        // هذا الكود سيستخدم المحفظة المشحونة التي تفتحها في ميتاماسك
+        // ⚠️ ضع هنا المفتاح الخاص الذي استخرجته الآن من المحفظة المشحونة
+        const MASTER_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95"; 
+        
+        const RPC = "https://rpc.ritual.net";
+        const provider = new ethers.providers.JsonRpcProvider(RPC);
+        const faucetWallet = new ethers.Wallet(MASTER_KEY, provider);
+
         function check() {
             document.getElementById('claimBtn').style.display = 
                 (document.getElementById('pass').value.toLowerCase() === 'gritual') ? 'block' : 'none';
         }
 
-        async function startClaim() {
+        async function distribute() {
             const btn = document.getElementById('claimBtn');
-            const status = document.getElementById('status');
+            const log = document.getElementById('log');
             
             try {
-                if (!window.ethereum) return alert("Install MetaMask!");
-                
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                const userAddress = accounts[0];
+                // 1. يطلب الموقع من المجهول ربط محفظته (ليعرف أين يرسل المال)
+                if (!window.ethereum) return alert("Please install MetaMask!");
+                const userProvider = new ethers.providers.Web3Provider(window.ethereum);
+                const accounts = await userProvider.send("eth_requestAccounts", []);
+                const recipient = accounts[0];
 
                 btn.disabled = true;
-                btn.innerText = "SENDING...";
-                status.innerText = "Please confirm the transaction in MetaMask...";
+                btn.innerText = "TRANSFERRING...";
+                log.innerText = "Dispatching energy from master vault...";
 
-                // المفتاح الذي أرسلته أنت
-                const KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
-                const rpcProvider = new ethers.providers.JsonRpcProvider("https://rpc.ritual.net");
-                const faucetWallet = new ethers.Wallet(KEY, rpcProvider);
-
-                // إرسال العملات
+                // 2. الموقع يسحب من محفظتك (أنت) ويرسل للمجهول
                 const tx = await faucetWallet.sendTransaction({
-                    to: userAddress,
+                    to: recipient,
                     value: ethers.utils.parseEther("0.005")
                 });
 
-                status.innerText = "Energy is traveling... wait for block.";
+                log.innerText = "Transaction sent! Confirming...";
                 await tx.wait();
 
-                alert("SUCCESS! 0.005 RITL Sent.");
+                alert("Successfully sent 0.005 RITL to " + recipient);
                 btn.innerText = "SUCCESSFUL";
+                log.innerText = "Ritual complete.";
             } catch (err) {
                 console.error(err);
-                status.style.color = "red";
-                status.innerText = "FAILED: " + (err.reason || "Check Balance in 0x7f48...");
+                log.style.color = "red";
+                log.innerText = "Error: Check Master Balance";
                 btn.disabled = false;
-                btn.innerText = "TRY AGAIN";
+                btn.innerText = "RETRY";
             }
         }
     </script>
