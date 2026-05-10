@@ -2,80 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ritual Master Faucet</title>
+    <title>Ritual Direct Faucet</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
-        :root { --neon: #00ff88; }
-        body { margin: 0; background: #050505; color: white; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .card { background: #000; padding: 30px; border: 1px solid var(--neon); border-radius: 15px; width: 380px; text-align: center; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
-        input { width: 100%; padding: 12px; background: #111; border: none; border-bottom: 2px solid var(--neon); color: white; margin: 15px 0; text-align: center; outline: none; }
-        .btn { width: 100%; padding: 15px; background: var(--neon); color: black; font-weight: bold; border: none; cursor: pointer; display: none; border-radius: 5px; }
-        #debug { font-size: 10px; margin-top: 15px; color: #888; text-align: left; background: #111; padding: 10px; border-radius: 5px; line-height: 1.4; }
+        :root { --green: #00ff88; }
+        body { margin: 0; background: #050505; color: white; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .card { background: #000; padding: 40px; border: 2px solid var(--green); border-radius: 20px; width: 360px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 136, 0.2); }
+        input { width: 100%; padding: 15px; background: #111; border: none; border-bottom: 2px solid var(--green); color: white; font-size: 18px; text-align: center; margin-bottom: 25px; outline: none; }
+        .btn { width: 100%; padding: 18px; background: var(--green); color: black; font-weight: 900; border: none; cursor: pointer; display: none; text-transform: uppercase; border-radius: 8px; font-size: 16px; }
+        #status { font-size: 12px; margin-top: 20px; color: var(--green); opacity: 0.8; }
     </style>
 </head>
 <body>
+
     <div class="card">
-        <h2 style="letter-spacing: 2px; color: var(--neon);">RITUAL GATE</h2>
-        <input type="text" id="pass" placeholder="Type gritual..." oninput="check()">
-        <button id="claimBtn" class="btn" onclick="distribute()">CLAIM ENERGY</button>
+        <h1 style="letter-spacing: 4px; margin: 0 0 10px 0;">RITUAL GATE</h1>
+        <p style="font-size: 11px; color: #666; margin-bottom: 30px;">DIRECT ENERGY TRANSFER</p>
         
-        <div id="debug">🔍 Checking Vault Status...</div>
+        <input type="text" id="passInput" placeholder="TYPE gritual..." oninput="check()">
+        <button id="claimBtn" class="btn" onclick="processFaucet()">CLAIM 0.005 RITL</button>
+        
+        <p id="status">Waiting for Ritual...</p>
     </div>
 
     <script>
-        // ضع مفتاحك هنا
-        const MASTER_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95"; 
-        const RPC = "https://rpc.ritual.net";
-
-        async function updateStatus() {
-            const debug = document.getElementById('debug');
-            try {
-                const provider = new ethers.providers.JsonRpcProvider(RPC);
-                const wallet = new ethers.Wallet(MASTER_KEY, provider);
-                const balance = await provider.getBalance(wallet.address);
-                const eth = ethers.utils.formatEther(balance);
-                
-                debug.innerHTML = `
-                    <b>Vault Address:</b> <span style="color:#fff">${wallet.address}</span><br>
-                    <b>Balance:</b> <span style="color:${eth < 0.006 ? 'red' : '#00ff88'}">${eth} RITL</span><br>
-                    ${eth < 0.006 ? '❌ <span style="color:red">Status: Needs Funds!</span>' : '✅ <span style="color:#00ff88">Status: Active</span>'}
-                `;
-            } catch (e) {
-                debug.innerText = "Connection Error. Check Network.";
-            }
-        }
-        updateStatus();
-
         function check() {
-            document.getElementById('claimBtn').style.display = 
-                (document.getElementById('pass').value.toLowerCase() === 'gritual') ? 'block' : 'none';
+            const val = document.getElementById('passInput').value.toLowerCase().trim();
+            document.getElementById('claimBtn').style.display = (val === 'gritual') ? 'block' : 'none';
         }
 
-        async function distribute() {
+        async function processFaucet() {
             const btn = document.getElementById('claimBtn');
-            const debug = document.getElementById('debug');
-            try {
-                const userProvider = new ethers.providers.Web3Provider(window.ethereum);
-                const accounts = await userProvider.send("eth_requestAccounts", []);
-                
-                btn.disabled = true; btn.innerText = "SENDING...";
-                
-                const provider = new ethers.providers.JsonRpcProvider(RPC);
-                const faucetWallet = new ethers.Wallet(MASTER_KEY, provider);
+            const status = document.getElementById('status');
 
-                const tx = await faucetWallet.sendTransaction({
-                    to: accounts[0],
+            if (!window.ethereum) return alert("Please install MetaMask!");
+
+            try {
+                // 1. ربط المحفظة
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const accounts = await provider.send("eth_requestAccounts", []);
+                const userAddress = accounts[0]; // عنوان الشخص الذي يريد العملات
+
+                btn.disabled = true;
+                btn.innerText = "CONFIRMING...";
+                status.innerText = "Please confirm the transfer in your MetaMask.";
+
+                // 2. إرسال المعاملة من محفظتك المفتوحة حالياً
+                const signer = provider.getSigner();
+                const tx = await signer.sendTransaction({
+                    to: userAddress, 
                     value: ethers.utils.parseEther("0.005")
                 });
 
-                debug.innerText = "Confirming on Blockchain...";
+                status.innerText = "Ritual in progress... waiting for block.";
                 await tx.wait();
-                alert("Energy sent successfully!");
-                location.reload();
+
+                alert("Success! 0.005 RITL sent to " + userAddress);
+                btn.innerText = "SUCCESSFUL";
+                status.innerText = "Energy Restored.";
+
             } catch (err) {
                 console.error(err);
-                alert("Ritual Failed: Check the balance in the black box.");
-                btn.disabled = false; btn.innerText = "RETRY";
+                status.style.color = "red";
+                status.innerText = "Ritual Failed: User cancelled or no funds.";
+                btn.disabled = false;
+                btn.innerText = "RETRY RITUAL";
             }
         }
     </script>
