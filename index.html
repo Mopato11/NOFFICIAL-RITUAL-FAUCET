@@ -7,36 +7,37 @@
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
         :root { --ritual-green: #00ff88; --dark-bg: #050505; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark-bg); color: white; font-family: 'Courier New', monospace; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark-bg); color: white; font-family: 'Courier New', monospace; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         
-        /* تأثير البرق الخلفي */
-        #lightning-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.6; }
+        /* تأثير البرق المتطور */
+        #lightning-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.7; }
         
-        .main-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; position: relative; z-index: 10; }
+        .main-content { position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column; align-items: center; }
         
         /* الشعار المتوهج */
-        .ritual-logo { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--ritual-green); box-shadow: 0 0 50px var(--ritual-green); animation: pulse 2.5s infinite ease-in-out; margin-bottom: 30px; transition: 0.5s; }
-        .ritual-logo:hover { transform: rotate(360deg); scale: 1.1; }
-        @keyframes pulse { 0% { box-shadow: 0 0 20px var(--ritual-green); } 50% { box-shadow: 0 0 60px var(--ritual-green); } 100% { box-shadow: 0 0 20px var(--ritual-green); } }
+        .ritual-logo { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--ritual-green); box-shadow: 0 0 30px var(--ritual-green); animation: pulse 2.5s infinite ease-in-out; margin-bottom: 25px; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px var(--ritual-green); transform: scale(1); } 50% { box-shadow: 0 0 50px var(--ritual-green); transform: scale(1.05); } }
         
-        /* بطاقة الفوسيت */
-        .faucet-card { background: rgba(0, 0, 0, 0.95); border: 1px solid var(--ritual-green); padding: 40px; width: 380px; text-align: center; backdrop-filter: blur(20px); border-radius: 20px; box-shadow: 0 20px 80px rgba(0,0,0,1); border-top: 5px solid var(--ritual-green); }
+        /* بطاقة الفوسيت الزجاجية */
+        .faucet-card { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--ritual-green); padding: 40px; width: 360px; text-align: center; backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 10px 60px rgba(0,0,0,1); }
         
-        h1 { font-size: 1.8rem; letter-spacing: 6px; margin: 0 0 10px 0; color: var(--ritual-green); text-shadow: 0 0 10px var(--ritual-green); }
+        h1 { font-size: 1.6rem; letter-spacing: 5px; margin: 0 0 15px 0; color: var(--ritual-green); text-shadow: 0 0 10px var(--ritual-green); }
         
-        input { width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-bottom: 3px solid var(--ritual-green); color: white; font-size: 18px; text-align: center; margin-bottom: 25px; outline: none; border-radius: 8px; transition: 0.3s; }
-        input:focus { background: #1a1a1a; border-color: white; }
-        
-        .btn-claim { width: 100%; padding: 18px; background: var(--ritual-green); color: black; font-weight: 900; border: none; cursor: pointer; display: none; text-transform: uppercase; border-radius: 10px; font-size: 16px; box-shadow: 0 0 20px var(--ritual-green); transition: 0.3s; }
-        .btn-claim:hover { background: white; box-shadow: 0 0 40px white; transform: translateY(-3px); }
-        
-        /* نظام الشموع */
-        .candles-row { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 2; padding-bottom: 5px; }
-        .candle { width: 15px; height: 50px; background: linear-gradient(to bottom, #222, #000); position: relative; border-radius: 3px 3px 0 0; }
-        .flame { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 10px; height: 22px; background: radial-gradient(circle, #fff, var(--ritual-green), transparent); border-radius: 50% 50% 20% 20%; filter: blur(1px); animation: flicker 0.15s infinite alternate; }
-        @keyframes flicker { 0% { transform: translateX(-50%) scale(1); opacity: 0.8; } 100% { transform: translateX(-52%) scale(1.1); opacity: 1; } }
+        .network-info { font-size: 10px; color: #888; margin-bottom: 20px; background: #111; padding: 8px; border-radius: 5px; border: 1px solid #222; }
 
-        #status { font-size: 12px; margin-top: 20px; color: #888; font-style: italic; }
+        input { width: 100%; padding: 15px; background: #000; border: none; border-bottom: 2px solid var(--ritual-green); color: white; font-size: 18px; text-align: center; margin-bottom: 25px; outline: none; transition: 0.3s; }
+        input:focus { background: #0a0a0a; border-bottom-color: white; }
+        
+        .btn-claim { width: 100%; padding: 18px; background: var(--ritual-green); color: black; font-weight: 900; border: none; cursor: pointer; display: none; text-transform: uppercase; border-radius: 8px; font-size: 16px; box-shadow: 0 5px 15px rgba(0,255,136,0.3); }
+        .btn-claim:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.4); }
+        
+        /* الشموع */
+        .candles-row { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 5; padding-bottom: 10px; }
+        .candle { width: 10px; height: 45px; background: #111; position: relative; border-radius: 2px; }
+        .flame { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 8px; height: 20px; background: var(--ritual-green); border-radius: 50% 50% 20% 20%; filter: blur(1px); animation: flicker 0.1s infinite alternate; }
+        @keyframes flicker { from { opacity: 0.7; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.15); } }
+
+        #status-text { font-size: 12px; margin-top: 15px; color: #555; }
     </style>
 </head>
 <body>
@@ -48,84 +49,98 @@
         
         <div class="faucet-card">
             <h1>RITUAL GATE</h1>
-            <p style="font-size: 11px; color: #666; margin-bottom: 25px;">THE ANCIENT DISPATCH OF 0.005 RITL</p>
+            <div class="network-info">
+                Network: Ritual (ID: 1979)<br>
+                <span id="userBalance">Balance: Checking...</span>
+            </div>
             
             <input type="text" id="passInput" placeholder="TYPE gritual..." oninput="checkKey()">
-            <button id="claimBtn" class="btn-claim" onclick="processRitual()">IGNITE RITUAL</button>
+            <button id="claimBtn" class="btn-claim" onclick="igniteRitual()">IGNITE 0.005 RITL</button>
             
-            <div id="status">Connection: Awaiting Ritualist...</div>
+            <div id="status-text">Awaiting Ritualist...</div>
         </div>
     </div>
 
     <div class="candles-row" id="candleRack"></div>
 
     <script>
-        // 1. الرسوم المتحركة (البرق والشموع)
+        // 1. الرسوميات (البرق والشموع)
         const canvas = document.getElementById('lightning-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         
-        function drawLightning() {
+        function draw() {
             ctx.fillStyle = 'rgba(5,5,5,0.15)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            if(Math.random() > 0.97) {
+            if(Math.random() > 0.96) {
                 ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 2; ctx.beginPath();
                 let x = Math.random()*canvas.width; ctx.moveTo(x, 0);
-                for(let i=0; i<10; i++) ctx.lineTo(x+(Math.random()-0.5)*60, (canvas.height/10)*(i+1));
+                for(let i=0; i<8; i++) ctx.lineTo(x+(Math.random()-0.5)*70, (canvas.height/8)*(i+1));
                 ctx.stroke();
             }
-            requestAnimationFrame(drawLightning);
+            requestAnimationFrame(draw);
         }
-        drawLightning();
+        draw();
 
         const rack = document.getElementById('candleRack');
-        const candleCount = Math.floor(window.innerWidth / 40);
-        for(let i=0; i<candleCount; i++) rack.innerHTML += '<div class="candle"><div class="flame"></div></div>';
+        for(let i=0; i<18; i++) rack.innerHTML += '<div class="candle"><div class="flame"></div></div>';
 
-        // 2. منطق العمل (بدون Private Key)
+        // 2. البرمجة (الربط مع محفظتك المشحونة)
         function checkKey() {
             const val = document.getElementById('passInput').value.toLowerCase().trim();
             document.getElementById('claimBtn').style.display = (val === "gritual") ? "block" : "none";
         }
 
-        async function processRitual() {
+        async function igniteRitual() {
             const btn = document.getElementById('claimBtn');
-            const status = document.getElementById('status');
+            const status = document.getElementById('status-text');
+            const balLabel = document.getElementById('userBalance');
 
             if (!window.ethereum) return alert("Please install MetaMask!");
 
             try {
-                // طلب الاتصال بمحفظة المستخدم (المستلم)
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
+                
+                // التأكد من أن المستخدم على الشبكة الصحيحة (1979)
+                const { chainId } = await provider.getNetwork();
+                if (chainId !== 1979) {
+                    alert("Switch MetaMask to Ritual Network (ID: 1979) first!");
+                    return;
+                }
+
                 const accounts = await provider.send("eth_requestAccounts", []);
-                const recipient = accounts[0];
+                const myAddress = accounts[0];
+                
+                // إظهار الرصيد
+                const balance = await provider.getBalance(myAddress);
+                const eth = ethers.utils.formatEther(balance);
+                balLabel.innerText = "Balance: " + eth + " RITL";
 
                 btn.disabled = true;
-                btn.innerText = "OPENING PORTAL...";
-                status.innerText = "Please confirm the transaction in MetaMask.";
+                btn.innerText = "TRANSMITTING...";
+                status.innerText = "Please confirm the send in MetaMask...";
 
-                // تنفيذ الإرسال من محفظتك الحالية المفتوحة
+                // تنفيذ الإرسال من محفظتك الحالية (التي بها 0.017)
                 const signer = provider.getSigner();
                 const tx = await signer.sendTransaction({
-                    to: recipient, 
+                    to: myAddress, // يرسل لنفسه كاختبار (يمكنك تغيير العنوان هنا)
                     value: ethers.utils.parseEther("0.005")
                 });
 
-                status.innerText = "Energy is traveling through the void...";
+                status.innerText = "Ritual in progress... waiting for block.";
                 await tx.wait();
 
-                alert("SUCCESS! 0.005 RITL Sent.");
+                alert("SUCCESS! Ritual complete.");
                 btn.innerText = "SUCCESSFUL";
-                status.innerText = "Ritual Complete. Energy Dispensed.";
-
+                status.innerText = "Energy dispensed.";
             } catch (err) {
                 console.error(err);
-                status.style.color = "red";
-                status.innerText = "Ritual Failed: No funds or user rejected.";
+                status.style.color = "#ff4444";
+                status.innerText = "Failed: No funds in MetaMask or user cancelled.";
                 btn.disabled = false;
-                btn.innerText = "RETRY RITUAL";
+                btn.innerText = "RETRY";
             }
         }
-        
+
         window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     </script>
 </body>
