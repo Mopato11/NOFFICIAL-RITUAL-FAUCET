@@ -2,120 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ritual Divine Gate | Final</title>
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <title>Ritual Final Gate</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
         :root { --neon: #00ff88; }
-        body { margin: 0; background: #000; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        #lightning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.4; pointer-events: none; }
-        .card { position: relative; z-index: 10; background: #000; border: 2px solid var(--neon); padding: 40px; border-radius: 25px; width: 380px; text-align: center; box-shadow: 0 0 40px rgba(0, 255, 136, 0.3); }
-        .logo { width: 110px; height: 110px; margin-bottom: 25px; filter: drop-shadow(0 0 20px var(--neon)); border-radius: 50%; border: 2px solid var(--neon); }
-        h1 { letter-spacing: 5px; color: var(--neon); margin: 0 0 25px 0; font-size: 22px; text-transform: uppercase; }
-        input { width: 100%; padding: 16px; background: #111; border: 1px solid #222; color: white; border-radius: 12px; margin-bottom: 15px; outline: none; text-align: center; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
-        input:focus { border-color: var(--neon); background: #050505; }
-        .btn { width: 100%; padding: 18px; background: var(--neon); color: black; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; display: none; text-transform: uppercase; font-size: 16px; transition: 0.3s; box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
-        .btn:hover { transform: scale(1.02); background: white; }
-        .candles { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 2; }
-        .candle { width: 10px; height: 30px; background: #111; position: relative; }
-        .flame { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 8px; height: 16px; background: var(--neon); border-radius: 50%; filter: blur(1px); animation: flicker 0.1s infinite alternate; }
-        @keyframes flicker { from { opacity: 0.8; } to { opacity: 1; } }
-        #status { font-size: 11px; margin-top: 20px; color: #444; }
+        body { margin: 0; background: #000; color: white; font-family: sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .card { position: relative; z-index: 10; background: #000; border: 2px solid var(--neon); padding: 30px; border-radius: 20px; width: 350px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 136, 0.2); }
+        .logo { width: 90px; border-radius: 50%; border: 2px solid var(--neon); margin-bottom: 20px; box-shadow: 0 0 15px var(--neon); }
+        input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 8px; margin-bottom: 10px; text-align: center; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; background: var(--neon); color: black; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        #status { font-size: 11px; margin-top: 15px; color: var(--neon); opacity: 0.7; }
+        /* الشموع والبرق بشكل مبسط لعدم إثقال الصفحة */
+        .bg-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #00ff8811 0%, #000 70%); z-index: 1; }
     </style>
 </head>
 <body>
-    <canvas id="lightning"></canvas>
+    <div class="bg-effect"></div>
     <div class="card">
         <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="logo">
-        <h1>RITUAL GATE</h1>
-        <input type="text" id="recipient" placeholder="Recipient Address (0x...)">
-        <input type="text" id="pass" placeholder="TYPE gritual..." oninput="check()">
-        <button id="claimBtn" class="btn" onclick="sendRitual()">IGNITE RITUAL</button>
-        <p id="status">Syncing with Ritual Blockchain...</p>
+        <h2 style="letter-spacing: 3px;">RITUAL GATE</h2>
+        
+        <input type="text" id="address" placeholder="Recipient (0x...)">
+        <input type="text" id="pass" placeholder="Password: gritual">
+        
+        <button class="btn" onclick="run()">IGNITE RITUAL</button>
+        
+        <div id="status">System Ready</div>
     </div>
-    <div class="candles" id="rack"></div>
 
     <script>
-        // الرسوميات
-        const canvas = document.getElementById('lightning');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            if(Math.random() > 0.97) {
-                ctx.strokeStyle = '#00ff88'; ctx.beginPath();
-                let x = Math.random()*canvas.width; ctx.moveTo(x, 0);
-                for(let i=0; i<8; i++) ctx.lineTo(x+(Math.random()-0.5)*80, (canvas.height/8)*(i+1));
-                ctx.stroke();
-            }
-            requestAnimationFrame(draw);
-        }
-        draw();
-        for(let i=0; i<20; i++) document.getElementById('rack').innerHTML += '<div class="candle"><div class="flame"></div></div>';
+        // البيانات الصارمة
+        const KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
+        const RPC = "https://rpc.ritualfoundation.org/"; 
 
-        // البرمجة
-        const PRIVATE_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
-        // روابط الشبكة (جربنا أكثر من واحد لضمان الاتصال)
-        const RPC_LIST = [
-            "https://rpc.ritualfoundation.org/",
-            "https://ritual-rpc.com" 
-        ];
-
-        function check() {
-            const val = document.getElementById('pass').value.toLowerCase().trim();
-            document.getElementById('claimBtn').style.display = (val === 'gritual') ? 'block' : 'none';
-        }
-
-        async function getProvider() {
-            for (let url of RPC_LIST) {
-                try {
-                    const p = new ethers.providers.JsonRpcProvider(url);
-                    await p.getNetwork();
-                    return p;
-                } catch (e) { console.log("Failed " + url); }
-            }
-            throw new Error("All RPCs failed");
-        }
-
-        async function init() {
+        async function run() {
+            const addr = document.getElementById('address').value.trim();
+            const pass = document.getElementById('pass').value.toLowerCase().trim();
             const status = document.getElementById('status');
-            try {
-                const provider = await getProvider();
-                const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-                const bal = await provider.getBalance(wallet.address);
-                status.innerText = "Connected | Vault: " + ethers.utils.formatEther(bal) + " RITL";
-                status.style.color = "#00ff88";
-            } catch (e) {
-                status.innerText = "Network Busy. Please refresh the page.";
-                status.style.color = "red";
-            }
-        }
-        init();
 
-        async function sendRitual() {
-            const dest = document.getElementById('recipient').value.trim();
-            const btn = document.getElementById('claimBtn');
-            const status = document.getElementById('status');
-            
-            if(!ethers.utils.isAddress(dest)) return alert("Please enter a valid wallet address!");
+            if (pass !== "gritual") return alert("Wrong Password!");
+            if (!ethers.utils.isAddress(addr)) return alert("Invalid Address!");
 
             try {
-                btn.disabled = true; btn.innerText = "DISPATCHING...";
-                const provider = await getProvider();
-                const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+                status.innerText = "Connecting to Ritual...";
+                // محاولة الاتصال المباشر عند الضغط لتجنب التعليق عند التحميل
+                const provider = new ethers.providers.JsonRpcProvider(RPC);
+                const wallet = new ethers.Wallet(KEY, provider);
 
+                status.innerText = "Sending 0.005 RITL...";
                 const tx = await wallet.sendTransaction({
-                    to: dest,
-                    value: ethers.utils.parseEther("0.005"),
-                    gasPrice: await provider.getGasPrice()
+                    to: addr,
+                    value: ethers.utils.parseUnits("0.005", "ether")
                 });
-                
-                status.innerText = "Energy Sent! HASH: " + tx.hash.substring(0,10) + "...";
-                await tx.wait();
-                alert("The Ritual was Successful! 0.005 RITL Sent.");
-                location.reload();
+
+                status.innerText = "Success! Hash: " + tx.hash.substring(0,12);
+                alert("DONE! Transaction Sent.");
             } catch (e) {
-                alert("Error: Insufficient funds in the master wallet or Network error.");
-                btn.disabled = false; btn.innerText = "RETRY RITUAL";
+                console.error(e);
+                status.innerText = "Error: Check Balance or Internet.";
+                alert("Failed! Make sure the wallet has RITL.");
             }
         }
     </script>
