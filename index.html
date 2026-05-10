@@ -227,3 +227,43 @@
     </script>
 </body>
 </html>
+
+// هذا الكود يوضع داخل <script> في أسفل ملف index.html
+async function check() {
+    const val = document.getElementById('ritualInput').value.toLowerCase();
+    const btn = document.getElementById('claimBtn');
+    
+    // إذا كتب المستخدم الكلمة السرية يظهر الزر
+    if(val === "gritual") {
+        btn.style.display = "block";
+    } else {
+        btn.style.display = "none";
+    }
+}
+
+async function startRitual() {
+    // 1. التأكد من وجود MetaMask
+    if (window.ethereum) {
+        try {
+            // 2. طلب إذن لربط المحفظة
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const address = accounts[0];
+            
+            // 3. تغيير شكل الزر لإعطاء حماس للمستخدم
+            const btn = document.getElementById('claimBtn');
+            btn.innerText = "SENDING EVREY TOKEN...";
+            btn.style.background = "#ffffff";
+            
+            // محاكاة إرسال الطاقة (هنا تربطها بعقدك الذكي لاحقاً)
+            setTimeout(() => {
+                alert("The Ritual is complete! Tokens sent to: " + address);
+                btn.innerText = "SUCCESSFUL";
+            }, 3000);
+
+        } catch (error) {
+            alert("Ritual failed: You must connect your wallet.");
+        }
+    } else {
+        alert("No magical wallet found. Please install MetaMask!");
+    }
+}
