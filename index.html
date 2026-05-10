@@ -2,73 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ritual Direct Faucet</title>
+    <title>Ritual Check</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-    <style>
-        :root { --green: #00ff88; }
-        body { margin: 0; background: #050505; color: white; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .card { background: #000; padding: 40px; border: 2px solid var(--green); border-radius: 20px; width: 360px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 136, 0.2); }
-        input { width: 100%; padding: 15px; background: #111; border: none; border-bottom: 2px solid var(--green); color: white; font-size: 18px; text-align: center; margin-bottom: 25px; outline: none; }
-        .btn { width: 100%; padding: 18px; background: var(--green); color: black; font-weight: 900; border: none; cursor: pointer; display: none; text-transform: uppercase; border-radius: 8px; font-size: 16px; }
-        #status { font-size: 12px; margin-top: 20px; color: var(--green); opacity: 0.8; }
-    </style>
 </head>
-<body>
-
-    <div class="card">
-        <h1 style="letter-spacing: 4px; margin: 0 0 10px 0;">RITUAL GATE</h1>
-        <p style="font-size: 11px; color: #666; margin-bottom: 30px;">DIRECT ENERGY TRANSFER</p>
-        
-        <input type="text" id="passInput" placeholder="TYPE gritual..." oninput="check()">
-        <button id="claimBtn" class="btn" onclick="processFaucet()">CLAIM 0.005 RITL</button>
-        
-        <p id="status">Waiting for Ritual...</p>
+<body style="background:#000; color:#0f8; font-family:monospace; padding:50px; text-align:center;">
+    <div style="border:1px solid #0f8; padding:20px; display:inline-block;">
+        <h2>🔍 فحص المحفظة</h2>
+        <p id="addr">جاري استخراج العنوان...</p>
+        <p id="bal">جاري فحص الرصيد...</p>
     </div>
 
     <script>
-        function check() {
-            const val = document.getElementById('passInput').value.toLowerCase().trim();
-            document.getElementById('claimBtn').style.display = (val === 'gritual') ? 'block' : 'none';
-        }
-
-        async function processFaucet() {
-            const btn = document.getElementById('claimBtn');
-            const status = document.getElementById('status');
-
-            if (!window.ethereum) return alert("Please install MetaMask!");
-
+        // هذا هو المفتاح الذي أعطيتني إياه
+        const KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
+        const provider = new ethers.providers.JsonRpcProvider("https://rpc.ritual.net");
+        
+        async function check() {
             try {
-                // 1. ربط المحفظة
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                const userAddress = accounts[0]; // عنوان الشخص الذي يريد العملات
-
-                btn.disabled = true;
-                btn.innerText = "CONFIRMING...";
-                status.innerText = "Please confirm the transfer in your MetaMask.";
-
-                // 2. إرسال المعاملة من محفظتك المفتوحة حالياً
-                const signer = provider.getSigner();
-                const tx = await signer.sendTransaction({
-                    to: userAddress, 
-                    value: ethers.utils.parseEther("0.005")
-                });
-
-                status.innerText = "Ritual in progress... waiting for block.";
-                await tx.wait();
-
-                alert("Success! 0.005 RITL sent to " + userAddress);
-                btn.innerText = "SUCCESSFUL";
-                status.innerText = "Energy Restored.";
-
-            } catch (err) {
-                console.error(err);
-                status.style.color = "red";
-                status.innerText = "Ritual Failed: User cancelled or no funds.";
-                btn.disabled = false;
-                btn.innerText = "RETRY RITUAL";
+                const wallet = new ethers.Wallet(KEY, provider);
+                const balance = await provider.getBalance(wallet.address);
+                
+                document.getElementById('addr').innerHTML = "<b>العنوان المرتبط بمفتاحك:</b><br>" + wallet.address;
+                document.getElementById('bal').innerHTML = "<b>الرصيد في هذا العنوان:</b><br>" + ethers.utils.formatEther(balance) + " RITL";
+            } catch (e) {
+                document.getElementById('bal').innerText = "خطأ في الاتصال بالشبكة";
             }
         }
+        check();
     </script>
 </body>
 </html>
