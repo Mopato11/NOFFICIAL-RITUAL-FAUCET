@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritual Mystical Faucet</title>
+    <title>Ritual Reality Faucet</title>
     <style>
         :root {
             --ritual-green: #00ff88;
@@ -16,189 +16,160 @@
             height: 100%;
             background-color: #000;
             color: white;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Cinzel', serif;
             overflow: hidden;
         }
 
-        /* حاوية الطقوس */
-        .ritual-scene {
+        /* فيديو الخلفية لجعل المشهد واقعياً */
+        .video-bg {
             position: fixed;
-            bottom: 0;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 60vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            z-index: 1;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.6;
+            filter: hue-rotate(80deg); /* تحويل أي نيران للأخضر */
         }
 
-        /* رسم الكاهن بالكود (The Shaman Silhouette) */
-        .shaman {
-            position: relative;
-            width: 120px;
-            height: 250px;
-            background: #000;
-            z-index: 5;
-            filter: drop-shadow(0 0 15px var(--ritual-green));
-            animation: ritual-sway 3s infinite alternate ease-in-out;
-        }
-
-        /* الرأس */
-        .shaman::before {
-            content: '';
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 60px;
-            background: #000;
-            border-radius: 50% 50% 0 0;
-        }
-
-        /* اليدين المرفوعتين للسماء */
-        .shaman::after {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -40px;
-            width: 200px;
-            height: 100px;
-            border-top: 15px solid #000;
-            border-left: 15px solid #000;
-            border-right: 15px solid #000;
-            border-radius: 50% 50% 0 0;
+        /* طبقة ضبابية ونيران إضافية */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, #000 90%);
             z-index: -1;
         }
 
-        @keyframes ritual-sway {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-10px) scale(1.05); }
-        }
-
-        /* النيران الخضراء الكثيفة (برمجية) */
-        .flame-wrap {
-            position: absolute;
-            bottom: 0;
-            display: flex;
-            gap: 5px;
-        }
-
-        .green-flame {
-            width: 40px;
-            height: 150px;
-            background: linear-gradient(to top, var(--ritual-green), transparent);
-            border-radius: 50% 50% 0 0;
-            filter: blur(10px);
-            opacity: 0.6;
-            animation: burn 1.5s infinite alternate;
-        }
-
-        @keyframes burn {
-            0% { height: 100px; opacity: 0.4; transform: scaleX(1); }
-            100% { height: 250px; opacity: 0.8; transform: scaleX(1.5); }
-        }
-
-        /* واجهة المستخدم */
-        .ui-layer {
-            position: relative;
-            z-index: 10;
+        /* محتوى الموقع */
+        .main-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 30px;
-        }
-
-        .logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid var(--ritual-green);
-            box-shadow: 0 0 20px var(--ritual-green);
-            margin-bottom: 10px;
-        }
-
-        .faucet-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--ritual-green);
-            padding: 30px;
-            width: 320px;
+            justify-content: center;
+            height: 100vh;
             text-align: center;
-            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* الشعار الرسمي */
+        .ritual-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--ritual-green);
+            box-shadow: 0 0 30px var(--ritual-green);
+            margin-bottom: 20px;
+        }
+
+        /* صندوق الفوسيت الزجاجي */
+        .faucet-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 40px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+        }
+
+        h1 {
+            color: var(--ritual-green);
+            letter-spacing: 5px;
+            margin: 0 0 20px 0;
+            font-size: 1.5rem;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            background: #111;
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
             border: 1px solid var(--ritual-green);
-            color: var(--ritual-green);
-            margin: 15px 0;
-            box-sizing: border-box;
-            outline: none;
+            color: white;
+            font-size: 18px;
             text-align: center;
+            margin-bottom: 20px;
+            outline: none;
         }
 
-        .claim-btn {
+        .btn-claim {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             background: var(--ritual-green);
             color: black;
             font-weight: bold;
             border: none;
             cursor: pointer;
+            text-transform: uppercase;
             display: none;
+            transition: 0.3s;
         }
 
-        .claim-btn:hover { background: white; }
+        .btn-claim:hover {
+            background: white;
+            box-shadow: 0 0 20px white;
+        }
 
+        /* الكاهن الواقعي (Shadow Figure) */
+        .shaman-visual {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.8;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="ui-layer">
-        <!-- شعارك المفضل -->
-        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="logo">
-        <h2 style="color: var(--ritual-green); letter-spacing: 4px;">RITUAL CEREMONY</h2>
+    <!-- فيديو خلفية لنيران واقعية جداً -->
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-green-particles-and-flames-in-the-dark-4008-large.mp4" type="video/mp4">
+    </video>
 
-        <div class="faucet-card">
-            <p>The Shaman raises his hands...</p>
-            <p style="font-size: 12px; color: #888;">Type gritual to ignite the ritual</p>
-            <input type="text" id="userInput" placeholder="..." oninput="check()">
-            <button id="claimBtn" class="claim-btn" onclick="done()">CLAIM EVREY TOKEN</button>
-            <p style="font-size: 10px; margin-top: 10px; color: #444;">Prepare for anthor drop</p>
+    <div class="overlay"></div>
+
+    <div class="main-content">
+        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
+        
+        <div class="faucet-container">
+            <h1>RITUAL CEREMONY</h1>
+            <p style="color: #ccc; margin-bottom: 20px;">The ritual awaits your word...</p>
+            
+            <input type="text" id="pass" placeholder="Type 'gritual'..." oninput="verify()">
+            
+            <button id="claimBtn" class="btn-claim" onclick="alert('Sent!')">Claim evrey token</button>
+            
+            <p style="font-size: 10px; color: #555; margin-top: 15px;">Waiting for anthor era of AI.</p>
         </div>
     </div>
 
-    <!-- مشهد الكاهن والنيران -->
-    <div class="ritual-scene">
-        <div class="flame-wrap" id="flamesContainer"></div>
-        <div class="shaman"></div>
-    </div>
+    <!-- كاهن بتصميم Silhouette واقعي يرفع يديه -->
+    <svg class="shaman-visual" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 150 L80 200 L120 200 Z" fill="#000" /> <!-- الجسد -->
+        <circle cx="100" cy="140" r="10" fill="#000" /> <!-- الرأس -->
+        <path d="M100 150 L60 110 M100 150 L140 110" stroke="#000" stroke-width="5" fill="none" /> <!-- الأيدي المرفوعة -->
+    </svg>
 
     <script>
-        // توليد نيران كثيفة حول الكاهن
-        const container = document.getElementById('flamesContainer');
-        for (let i = 0; i < 30; i++) {
-            let f = document.createElement('div');
-            f.className = 'green-flame';
-            f.style.animationDelay = Math.random() * 2 + 's';
-            f.style.opacity = Math.random();
-            container.appendChild(f);
-        }
-
-        function check() {
-            const val = document.getElementById('userInput').value.toLowerCase();
+        function verify() {
+            const val = document.getElementById('pass').value.toLowerCase();
             const btn = document.getElementById('claimBtn');
             if(val === "gritual") {
                 btn.style.display = "block";
             } else {
                 btn.style.display = "none";
             }
-        }
-
-        function done() {
-            alert("The ritual is successful! Check your wallet for evrey token.");
         }
     </script>
 </body>
