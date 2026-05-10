@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritual Shaman Faucet</title>
+    <title>Ritual Mystical Altar</title>
     <style>
         :root {
             --ritual-green: #00ff88;
+            --dark-bg: #050505;
         }
 
         body, html {
@@ -14,142 +15,231 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* خلفية سوداء في حال فشل الصورة */
+            background-color: var(--dark-bg);
             color: white;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* حاوية الخلفية */
-        .bg-wrap {
+        /* البرق الأخضر */
+        .lightning {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
-            /* هنا نحاول استدعاء الصورة محلياً من ملفاتك */
-            background-image: url('shaman.jpg'), url('https://i.ibb.co/6RTPZ0S/N6p34ztp.jpg');
-            background-size: cover;
-            background-position: center;
-            animation: zoomSlow 15s infinite alternate;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
         }
 
-        @keyframes zoomSlow {
-            from { transform: scale(1); filter: brightness(0.6); }
-            to { transform: scale(1.1); filter: brightness(0.9); }
+        @keyframes flash {
+            0%, 90%, 100% { opacity: 0; }
+            92% { opacity: 0.3; background-color: var(--ritual-green); }
+            94% { opacity: 0.1; }
+            96% { opacity: 0.5; background-color: white; }
         }
 
-        /* تأثير الضباب والنيران الخضراء */
-        .mist {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 50%;
-            background: linear-gradient(to top, rgba(0, 255, 136, 0.3), transparent);
-            filter: blur(50px);
-            z-index: -1;
+        .lightning-active {
+            animation: flash 5s infinite;
         }
 
-        .main-ui {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            z-index: 10;
+        /* الشعار المشعل */
+        .logo-container {
             position: relative;
+            margin-bottom: 30px;
         }
 
-        .logo {
-            width: 110px;
-            height: 110px;
+        .main-logo {
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            border: 3px solid var(--ritual-green);
-            box-shadow: 0 0 25px var(--ritual-green);
-            margin-bottom: 20px;
+            border: 4px solid var(--ritual-green);
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 0 20px var(--ritual-green);
+            animation: pulse 2s infinite alternate;
         }
 
-        .card {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid var(--ritual-green);
-            padding: 35px;
-            width: 340px;
+        @keyframes pulse {
+            from { transform: scale(1); box-shadow: 0 0 20px var(--ritual-green); }
+            to { transform: scale(1.05); box-shadow: 0 0 40px var(--ritual-green), 0 0 60px #00ff8866; }
+        }
+
+        /* الشموع والنيران */
+        .candles-container {
+            position: absolute;
+            width: 100%;
+            bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 50px;
+            box-sizing: border-box;
+        }
+
+        .candle {
+            width: 20px;
+            height: 80px;
+            background: #1a1a1a;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: var(--ritual-green);
+            border-radius: 50% 50% 20% 20%;
+            filter: blur(2px);
+            box-shadow: 0 0 15px var(--ritual-green);
+            animation: flicker 0.1s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+            100% { transform: translateX(-52%) scale(1.1); opacity: 1; }
+        }
+
+        /* واجهة الإدخال الجميلة */
+        .altar-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 50px;
+            border-radius: 20px;
             text-align: center;
-            backdrop-filter: blur(10px);
+            width: 400px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        h2 {
+            letter-spacing: 6px;
+            color: var(--ritual-green);
+            margin-top: 0;
+            font-weight: 300;
+        }
+
+        .input-group {
+            position: relative;
+            margin: 30px 0;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            background: #111;
-            border: 1px solid var(--ritual-green);
-            color: var(--ritual-green);
-            text-align: center;
-            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border: none;
+            border-bottom: 2px solid #333;
+            color: white;
+            font-size: 18px;
             outline: none;
+            transition: 0.4s;
+            text-align: center;
+            letter-spacing: 2px;
         }
 
-        .btn {
+        input:focus {
+            border-bottom-color: var(--ritual-green);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .btn-ritual {
             width: 100%;
-            padding: 15px;
-            background: var(--ritual-green);
-            color: #000;
+            padding: 18px;
+            background: transparent;
+            border: 2px solid var(--ritual-green);
+            color: var(--ritual-green);
             font-weight: bold;
-            border: none;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
             display: none;
         }
 
-        /* جزيئات طائرة */
-        .spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
+        .btn-ritual:hover {
             background: var(--ritual-green);
-            box-shadow: 0 0 10px var(--ritual-green);
-            border-radius: 50%;
-            animation: fly 3s infinite linear;
+            color: black;
+            box-shadow: 0 0 30px var(--ritual-green);
         }
 
-        @keyframes fly {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100vh); opacity: 0; }
+        /* نيران مشتعلة في الأسفل */
+        .floor-fire {
+            position: fixed;
+            bottom: -50px;
+            width: 100%;
+            height: 150px;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.2) 0%, transparent 70%);
+            filter: blur(20px);
         }
+
     </style>
 </head>
 <body>
 
-    <div class="bg-wrap"></div>
-    <div class="mist"></div>
+    <div class="lightning lightning-active"></div>
 
-    <div class="main-ui">
-        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="logo">
-        <div class="card">
-            <h2 style="color: var(--ritual-green);">RITUAL GATE</h2>
-            <p style="font-size: 13px;">The shaman needs evrey soul to ignite.</p>
-            <input type="text" id="input" placeholder="Type gritual..." oninput="verify()">
-            <button id="btn" class="btn" onclick="alert('Sent!')">CLAIM EVREY TOKEN</button>
-            <p style="font-size: 10px; color: #444; margin-top: 10px;">Waiting for anthor era.</p>
+    <div class="main-container">
+        <div class="altar-card">
+            <div class="logo-container">
+                <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="main-logo">
+            </div>
+            
+            <h2>RITUAL</h2>
+            <p style="color: #666; font-size: 12px;">EVREY BUILDER IS WELCOME</p>
+
+            <div class="input-group">
+                <input type="text" id="ritualInput" placeholder="ENTER SECRET WORD" oninput="check()">
+            </div>
+
+            <button id="claimBtn" class="btn-ritual" onclick="ignite()">Ignite Ritual</button>
+            
+            <p style="color: #333; font-size: 10px; margin-top: 20px;">Waiting for anthor block...</p>
         </div>
     </div>
 
+    <!-- الشموع -->
+    <div class="candles-container">
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+    </div>
+
+    <div class="floor-fire"></div>
+
     <script>
-        function verify() {
-            const val = document.getElementById('input').value.toLowerCase();
-            const btn = document.getElementById('btn');
-            btn.style.display = (val === "gritual") ? "block" : "none";
+        function check() {
+            const val = document.getElementById('ritualInput').value.toLowerCase();
+            const btn = document.getElementById('claimBtn');
+            if(val === "gritual") {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
         }
 
-        // إضافة جزيئات طائرة لتعويض غياب الصورة لو لم تظهر
-        for(let i=0; i<30; i++) {
-            let s = document.createElement('div');
-            s.className = 'spark';
-            s.style.left = Math.random() * 100 + 'vw';
-            s.style.bottom = '0';
-            s.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(s);
+        function ignite() {
+            alert("The ritual has begun! Check your wallet for evrey token.");
         }
+
+        // كود لجعل البرق يضرب بشكل عشوائي
+        setInterval(() => {
+            if(Math.random() > 0.7) {
+                document.querySelector('.lightning').style.animation = 'none';
+                setTimeout(() => {
+                    document.querySelector('.lightning').style.animation = 'flash 0.5s ease-out';
+                }, 10);
+            }
+        }, 3000);
     </script>
 </body>
 </html>
