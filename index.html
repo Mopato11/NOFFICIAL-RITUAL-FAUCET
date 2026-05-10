@@ -14,168 +14,141 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #000;
+            background-color: #000; /* خلفية سوداء في حال فشل الصورة */
             color: white;
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
         }
 
-        /* حاوية الخلفية لضمان ظهور الصورة */
-        .background-container {
+        /* حاوية الخلفية */
+        .bg-wrap {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -2;
-            /* استخدمت رابطاً بديلاً ومباشراً أكثر */
-            background-image: url('https://i.ibb.co/6RTPZ0S/N6p34ztp.jpg');
+            /* هنا نحاول استدعاء الصورة محلياً من ملفاتك */
+            background-image: url('shaman.jpg'), url('https://i.ibb.co/6RTPZ0S/N6p34ztp.jpg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            animation: zoomEffect 10s infinite alternate ease-in-out;
+            animation: zoomSlow 15s infinite alternate;
         }
 
-        @keyframes zoomEffect {
-            from { transform: scale(1); filter: brightness(0.5) hue-rotate(0deg); }
-            to { transform: scale(1.1); filter: brightness(0.9) hue-rotate(20deg); }
+        @keyframes zoomSlow {
+            from { transform: scale(1); filter: brightness(0.6); }
+            to { transform: scale(1.1); filter: brightness(0.9); }
         }
 
-        /* نيران خضراء متحركة فوق الصورة */
-        .fire-particles {
+        /* تأثير الضباب والنيران الخضراء */
+        .mist {
             position: fixed;
             bottom: 0;
             width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at bottom, rgba(0, 255, 136, 0.2), transparent 70%);
+            height: 50%;
+            background: linear-gradient(to top, rgba(0, 255, 136, 0.3), transparent);
+            filter: blur(50px);
             z-index: -1;
-            pointer-events: none;
         }
 
-        .main-content {
+        .main-ui {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.4); /* طبقة تعتيم خفيفة لإظهار النص */
+            z-index: 10;
+            position: relative;
         }
 
-        .ritual-logo {
-            width: 120px;
-            height: 120px;
+        .logo {
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
-            border: 4px solid var(--ritual-green);
-            box-shadow: 0 0 30px var(--ritual-green);
+            border: 3px solid var(--ritual-green);
+            box-shadow: 0 0 25px var(--ritual-green);
             margin-bottom: 20px;
         }
 
-        .faucet-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid var(--ritual-green);
-            padding: 40px;
-            width: 380px;
+        .card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--ritual-green);
+            padding: 35px;
+            width: 340px;
             text-align: center;
-            box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
-            border-radius: 5px;
-        }
-
-        h1 {
-            color: var(--ritual-green);
-            letter-spacing: 5px;
-            text-shadow: 0 0 15px var(--ritual-green);
-            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
         }
 
         input {
             width: 100%;
-            padding: 15px;
-            background: #000;
+            padding: 12px;
+            background: #111;
             border: 1px solid var(--ritual-green);
-            color: white;
-            font-size: 18px;
+            color: var(--ritual-green);
             text-align: center;
-            margin-bottom: 20px;
+            margin: 20px 0;
             outline: none;
-            box-sizing: border-box;
         }
 
-        .claim-btn {
+        .btn {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             background: var(--ritual-green);
-            color: black;
+            color: #000;
             font-weight: bold;
             border: none;
             cursor: pointer;
             display: none;
-            text-transform: uppercase;
         }
 
-        .claim-btn:hover { background: white; box-shadow: 0 0 30px white; }
-
-        /* جزيئات النيران */
-        .dot {
+        /* جزيئات طائرة */
+        .spark {
             position: absolute;
+            width: 4px;
+            height: 4px;
             background: var(--ritual-green);
+            box-shadow: 0 0 10px var(--ritual-green);
             border-radius: 50%;
-            filter: blur(4px);
-            opacity: 0.6;
-            animation: moveUp 4s infinite linear;
+            animation: fly 3s infinite linear;
         }
 
-        @keyframes moveUp {
-            0% { transform: translateY(0) scale(1); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) scale(2); opacity: 0; }
+        @keyframes fly {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- حاوية الصورة -->
-    <div class="background-container"></div>
-    <div class="fire-particles" id="fireWrap"></div>
+    <div class="bg-wrap"></div>
+    <div class="mist"></div>
 
-    <div class="main-content">
-        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
-        
-        <div class="faucet-card">
-            <h1>RITUAL FAUCET</h1>
-            <p style="color: #aaa; margin-bottom: 20px;">The Shaman is waiting for evrey soul.</p>
-            
-            <input type="text" id="magicWord" placeholder="Type gritual..." oninput="verify()">
-            
-            <button id="claimBtn" class="claim-btn" onclick="alert('The ritual is complete!')">Claim evrey token</button>
-            
-            <p style="font-size: 10px; color: #444; margin-top: 15px;">Waiting for anthor drop</p>
+    <div class="main-ui">
+        <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="logo">
+        <div class="card">
+            <h2 style="color: var(--ritual-green);">RITUAL GATE</h2>
+            <p style="font-size: 13px;">The shaman needs evrey soul to ignite.</p>
+            <input type="text" id="input" placeholder="Type gritual..." oninput="verify()">
+            <button id="btn" class="btn" onclick="alert('Sent!')">CLAIM EVREY TOKEN</button>
+            <p style="font-size: 10px; color: #444; margin-top: 10px;">Waiting for anthor era.</p>
         </div>
     </div>
 
     <script>
-        // كود النيران المتطايرة
-        const wrap = document.getElementById('fireWrap');
-        for (let i = 0; i < 40; i++) {
-            let dot = document.createElement('div');
-            dot.className = 'dot';
-            let size = Math.random() * 20 + 5 + 'px';
-            dot.style.width = size;
-            dot.style.height = size;
-            dot.style.left = Math.random() * 100 + 'vw';
-            dot.style.bottom = "-20px";
-            dot.style.animationDuration = Math.random() * 3 + 2 + 's';
-            dot.style.animationDelay = Math.random() * 5 + 's';
-            wrap.appendChild(dot);
+        function verify() {
+            const val = document.getElementById('input').value.toLowerCase();
+            const btn = document.getElementById('btn');
+            btn.style.display = (val === "gritual") ? "block" : "none";
         }
 
-        function verify() {
-            const val = document.getElementById('magicWord').value.toLowerCase();
-            const btn = document.getElementById('claimBtn');
-            if(val === "gritual") {
-                btn.style.display = "block";
-            } else {
-                btn.style.display = "none";
-            }
+        // إضافة جزيئات طائرة لتعويض غياب الصورة لو لم تظهر
+        for(let i=0; i<30; i++) {
+            let s = document.createElement('div');
+            s.className = 'spark';
+            s.style.left = Math.random() * 100 + 'vw';
+            s.style.bottom = '0';
+            s.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(s);
         }
     </script>
 </body>
