@@ -2,146 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritual Genesis Gate</title>
+    <title>Ritual Divine Gate</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
-        :root { --ritual-green: #00ff88; --dark-bg: #050505; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark-bg); color: white; font-family: 'Courier New', monospace; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        
-        /* تأثير البرق المتطور */
-        #lightning-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.7; }
-        
-        .main-content { position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        
-        /* الشعار المتوهج */
-        .ritual-logo { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--ritual-green); box-shadow: 0 0 30px var(--ritual-green); animation: pulse 2.5s infinite ease-in-out; margin-bottom: 25px; }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px var(--ritual-green); transform: scale(1); } 50% { box-shadow: 0 0 50px var(--ritual-green); transform: scale(1.05); } }
-        
-        /* بطاقة الفوسيت الزجاجية */
-        .faucet-card { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--ritual-green); padding: 40px; width: 360px; text-align: center; backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 10px 60px rgba(0,0,0,1); }
-        
-        h1 { font-size: 1.6rem; letter-spacing: 5px; margin: 0 0 15px 0; color: var(--ritual-green); text-shadow: 0 0 10px var(--ritual-green); }
-        
-        .network-info { font-size: 10px; color: #888; margin-bottom: 20px; background: #111; padding: 8px; border-radius: 5px; border: 1px solid #222; }
-
-        input { width: 100%; padding: 15px; background: #000; border: none; border-bottom: 2px solid var(--ritual-green); color: white; font-size: 18px; text-align: center; margin-bottom: 25px; outline: none; transition: 0.3s; }
-        input:focus { background: #0a0a0a; border-bottom-color: white; }
-        
-        .btn-claim { width: 100%; padding: 18px; background: var(--ritual-green); color: black; font-weight: 900; border: none; cursor: pointer; display: none; text-transform: uppercase; border-radius: 8px; font-size: 16px; box-shadow: 0 5px 15px rgba(0,255,136,0.3); }
-        .btn-claim:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.4); }
-        
-        /* الشموع */
-        .candles-row { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 5; padding-bottom: 10px; }
-        .candle { width: 10px; height: 45px; background: #111; position: relative; border-radius: 2px; }
+        :root { --ritual-green: #00ff88; }
+        body { margin: 0; background: #020202; color: white; font-family: 'Courier New', monospace; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        #lightning-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
+        .glass-card { position: relative; z-index: 10; background: rgba(0, 0, 0, 0.95); border: 1px solid var(--ritual-green); padding: 40px; width: 380px; text-align: center; border-radius: 20px; box-shadow: 0 0 50px rgba(0, 255, 136, 0.3); border-top: 4px solid var(--ritual-green); }
+        .ritual-logo { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--ritual-green); margin-bottom: 20px; box-shadow: 0 0 30px var(--ritual-green); animation: pulse 2s infinite ease-in-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        h1 { letter-spacing: 5px; color: var(--ritual-green); text-shadow: 0 0 10px var(--ritual-green); margin: 10px 0; font-size: 24px; }
+        input { width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-bottom: 3px solid var(--ritual-green); color: white; font-size: 16px; text-align: center; margin-bottom: 20px; outline: none; border-radius: 8px; }
+        .btn-ignite { width: 100%; padding: 18px; background: var(--ritual-green); color: black; font-weight: 900; border: none; cursor: pointer; display: none; text-transform: uppercase; border-radius: 10px; box-shadow: 0 0 20px var(--ritual-green); }
+        .candles { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 2; }
+        .candle { width: 12px; height: 45px; background: #111; position: relative; }
         .flame { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 8px; height: 20px; background: var(--ritual-green); border-radius: 50% 50% 20% 20%; filter: blur(1px); animation: flicker 0.1s infinite alternate; }
-        @keyframes flicker { from { opacity: 0.7; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.15); } }
-
-        #status-text { font-size: 12px; margin-top: 15px; color: #555; }
+        @keyframes flicker { from { opacity: 0.8; } to { opacity: 1; } }
+        #log { font-size: 11px; margin-top: 15px; color: #888; min-height: 20px; }
     </style>
 </head>
 <body>
-
     <canvas id="lightning-canvas"></canvas>
-
-    <div class="main-content">
+    <div class="glass-card">
         <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="ritual-logo">
+        <h1>RITUAL GATE</h1>
         
-        <div class="faucet-card">
-            <h1>RITUAL GATE</h1>
-            <div class="network-info">
-                Network: Ritual (ID: 1979)<br>
-                <span id="userBalance">Balance: Checking...</span>
-            </div>
-            
-            <input type="text" id="passInput" placeholder="TYPE gritual..." oninput="checkKey()">
-            <button id="claimBtn" class="btn-claim" onclick="igniteRitual()">IGNITE 0.005 RITL</button>
-            
-            <div id="status-text">Awaiting Ritualist...</div>
-        </div>
+        <input type="text" id="recipient" placeholder="Recipient Address (0x...)">
+        
+        <input type="text" id="pass" placeholder="TYPE gritual..." oninput="check()">
+        
+        <button id="claimBtn" class="btn-ignite" onclick="dispatchEnergy()">IGNITE RITUAL</button>
+        <p id="log">Awaiting Ritualist...</p>
     </div>
-
-    <div class="candles-row" id="candleRack"></div>
+    <div class="candles" id="rack"></div>
 
     <script>
-        // 1. الرسوميات (البرق والشموع)
+        // --- الرسوميات ---
         const canvas = document.getElementById('lightning-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        
         function draw() {
-            ctx.fillStyle = 'rgba(5,5,5,0.15)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = 'rgba(2,2,2,0.15)'; ctx.fillRect(0,0,canvas.width,canvas.height);
             if(Math.random() > 0.96) {
                 ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 2; ctx.beginPath();
                 let x = Math.random()*canvas.width; ctx.moveTo(x, 0);
-                for(let i=0; i<8; i++) ctx.lineTo(x+(Math.random()-0.5)*70, (canvas.height/8)*(i+1));
+                for(let i=0; i<10; i++) ctx.lineTo(x+(Math.random()-0.5)*60, (canvas.height/10)*(i+1));
                 ctx.stroke();
             }
             requestAnimationFrame(draw);
         }
         draw();
+        for(let i=0; i<18; i++) document.getElementById('rack').innerHTML += '<div class="candle"><div class="flame"></div></div>';
 
-        const rack = document.getElementById('candleRack');
-        for(let i=0; i<18; i++) rack.innerHTML += '<div class="candle"><div class="flame"></div></div>';
+        // --- البرمجة التلقائية ---
+        // تأكد أن هذا هو المفتاح الخاص للمحفظة التي تظهر فيها الـ 0.017 في المواقع الأخرى
+        const MASTER_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
+        const RPC_URL = "https://rpc.ritualfoundation.org/";
 
-        // 2. البرمجة (الربط مع محفظتك المشحونة)
-        function checkKey() {
-            const val = document.getElementById('passInput').value.toLowerCase().trim();
-            document.getElementById('claimBtn').style.display = (val === "gritual") ? "block" : "none";
+        function check() {
+            const val = document.getElementById('pass').value.toLowerCase().trim();
+            document.getElementById('claimBtn').style.display = (val === 'gritual') ? 'block' : 'none';
         }
 
-        async function igniteRitual() {
+        async function dispatchEnergy() {
+            const recipient = document.getElementById('recipient').value.trim();
+            const log = document.getElementById('log');
             const btn = document.getElementById('claimBtn');
-            const status = document.getElementById('status-text');
-            const balLabel = document.getElementById('userBalance');
 
-            if (!window.ethereum) return alert("Please install MetaMask!");
+            if(!ethers.utils.isAddress(recipient)) return alert("Invalid Recipient Address!");
 
             try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                
-                // التأكد من أن المستخدم على الشبكة الصحيحة (1979)
-                const { chainId } = await provider.getNetwork();
-                if (chainId !== 1979) {
-                    alert("Switch MetaMask to Ritual Network (ID: 1979) first!");
-                    return;
-                }
-
-                const accounts = await provider.send("eth_requestAccounts", []);
-                const myAddress = accounts[0];
-                
-                // إظهار الرصيد
-                const balance = await provider.getBalance(myAddress);
-                const eth = ethers.utils.formatEther(balance);
-                balLabel.innerText = "Balance: " + eth + " RITL";
-
                 btn.disabled = true;
                 btn.innerText = "TRANSMITTING...";
-                status.innerText = "Please confirm the send in MetaMask...";
+                log.innerText = "Connecting to Ritual Blockchain...";
 
-                // تنفيذ الإرسال من محفظتك الحالية (التي بها 0.017)
-                const signer = provider.getSigner();
-                const tx = await signer.sendTransaction({
-                    to: myAddress, // يرسل لنفسه كاختبار (يمكنك تغيير العنوان هنا)
-                    value: ethers.utils.parseEther("0.005")
+                // الاتصال المباشر بالشبكة
+                const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+                const wallet = new ethers.Wallet(MASTER_KEY, provider);
+
+                log.innerText = "Initiating transfer from vault...";
+                
+                const tx = await wallet.sendTransaction({
+                    to: recipient,
+                    value: ethers.utils.parseEther("0.005"),
+                    gasLimit: 21000 // الغاز الافتراضي للإرسال البسيط
                 });
 
-                status.innerText = "Ritual in progress... waiting for block.";
+                log.innerText = "TX Sent! Confirming on-chain...";
                 await tx.wait();
 
-                alert("SUCCESS! Ritual complete.");
+                alert("SUCCESS! 0.005 RITL Sent to " + recipient);
+                log.innerText = "Ritual Complete.";
                 btn.innerText = "SUCCESSFUL";
-                status.innerText = "Energy dispensed.";
-            } catch (err) {
-                console.error(err);
-                status.style.color = "#ff4444";
-                status.innerText = "Failed: No funds in MetaMask or user cancelled.";
+            } catch (e) {
+                console.error(e);
+                log.style.color = "red";
+                log.innerText = "Error: Check Vault Balance or RPC.";
                 btn.disabled = false;
                 btn.innerText = "RETRY";
             }
         }
-
-        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     </script>
 </body>
 </html>
