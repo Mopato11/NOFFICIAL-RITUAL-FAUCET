@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ritual Divine Gate</title>
+    <title>Ritual Divine Gate | Final</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
         :root { --neon: #00ff88; }
-        body { margin: 0; background: #000; color: white; font-family: 'Courier New', monospace; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        #lightning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.5; }
-        .card { position: relative; z-index: 10; background: rgba(0, 0, 0, 0.9); border: 2px solid var(--neon); padding: 40px; border-radius: 20px; width: 380px; text-align: center; box-shadow: 0 0 50px rgba(0, 255, 136, 0.2); }
-        .logo { width: 100px; height: 100px; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--neon)); }
-        h1 { letter-spacing: 5px; color: var(--neon); margin-bottom: 25px; font-size: 22px; }
-        input { width: 100%; padding: 15px; background: #111; border: 1px solid #333; color: white; border-radius: 10px; margin-bottom: 15px; outline: none; text-align: center; font-size: 14px; box-sizing: border-box; }
-        input:focus { border-color: var(--neon); }
-        .btn { width: 100%; padding: 18px; background: var(--neon); color: black; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; display: none; text-transform: uppercase; box-shadow: 0 0 20px var(--neon); }
+        body { margin: 0; background: #000; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        #lightning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.4; pointer-events: none; }
+        .card { position: relative; z-index: 10; background: #000; border: 2px solid var(--neon); padding: 40px; border-radius: 25px; width: 380px; text-align: center; box-shadow: 0 0 40px rgba(0, 255, 136, 0.3); }
+        .logo { width: 110px; height: 110px; margin-bottom: 25px; filter: drop-shadow(0 0 20px var(--neon)); border-radius: 50%; border: 2px solid var(--neon); }
+        h1 { letter-spacing: 5px; color: var(--neon); margin: 0 0 25px 0; font-size: 22px; text-transform: uppercase; }
+        input { width: 100%; padding: 16px; background: #111; border: 1px solid #222; color: white; border-radius: 12px; margin-bottom: 15px; outline: none; text-align: center; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
+        input:focus { border-color: var(--neon); background: #050505; }
+        .btn { width: 100%; padding: 18px; background: var(--neon); color: black; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; display: none; text-transform: uppercase; font-size: 16px; transition: 0.3s; box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        .btn:hover { transform: scale(1.02); background: white; }
         .candles { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 2; }
-        .candle { width: 10px; height: 35px; background: #111; position: relative; }
-        .flame { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 8px; height: 15px; background: var(--neon); border-radius: 50%; filter: blur(1px); animation: flicker 0.1s infinite alternate; }
+        .candle { width: 10px; height: 30px; background: #111; position: relative; }
+        .flame { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 8px; height: 16px; background: var(--neon); border-radius: 50%; filter: blur(1px); animation: flicker 0.1s infinite alternate; }
         @keyframes flicker { from { opacity: 0.8; } to { opacity: 1; } }
-        #status { font-size: 11px; margin-top: 15px; color: #555; }
+        #status { font-size: 11px; margin-top: 20px; color: #444; }
     </style>
 </head>
 <body>
@@ -29,21 +30,21 @@
         <input type="text" id="recipient" placeholder="Recipient Address (0x...)">
         <input type="text" id="pass" placeholder="TYPE gritual..." oninput="check()">
         <button id="claimBtn" class="btn" onclick="sendRitual()">IGNITE RITUAL</button>
-        <p id="status">Connecting to Ritual Network...</p>
+        <p id="status">Syncing with Ritual Blockchain...</p>
     </div>
     <div class="candles" id="rack"></div>
 
     <script>
-        // تأثير البرق والشموع
+        // الرسوميات
         const canvas = document.getElementById('lightning');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            if(Math.random() > 0.96) {
+            ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            if(Math.random() > 0.97) {
                 ctx.strokeStyle = '#00ff88'; ctx.beginPath();
                 let x = Math.random()*canvas.width; ctx.moveTo(x, 0);
-                for(let i=0; i<8; i++) ctx.lineTo(x+(Math.random()-0.5)*50, (canvas.height/8)*(i+1));
+                for(let i=0; i<8; i++) ctx.lineTo(x+(Math.random()-0.5)*80, (canvas.height/8)*(i+1));
                 ctx.stroke();
             }
             requestAnimationFrame(draw);
@@ -51,24 +52,41 @@
         draw();
         for(let i=0; i<20; i++) document.getElementById('rack').innerHTML += '<div class="candle"><div class="flame"></div></div>';
 
-        // برمجة الإرسال
+        // البرمجة
         const PRIVATE_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
-        const RPC = "https://rpc.ritualfoundation.org/";
+        // روابط الشبكة (جربنا أكثر من واحد لضمان الاتصال)
+        const RPC_LIST = [
+            "https://rpc.ritualfoundation.org/",
+            "https://ritual-rpc.com" 
+        ];
 
         function check() {
             const val = document.getElementById('pass').value.toLowerCase().trim();
             document.getElementById('claimBtn').style.display = (val === 'gritual') ? 'block' : 'none';
         }
 
+        async function getProvider() {
+            for (let url of RPC_LIST) {
+                try {
+                    const p = new ethers.providers.JsonRpcProvider(url);
+                    await p.getNetwork();
+                    return p;
+                } catch (e) { console.log("Failed " + url); }
+            }
+            throw new Error("All RPCs failed");
+        }
+
         async function init() {
             const status = document.getElementById('status');
             try {
-                const provider = new ethers.providers.JsonRpcProvider(RPC);
+                const provider = await getProvider();
                 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
                 const bal = await provider.getBalance(wallet.address);
-                status.innerText = "Vault Ready | Balance: " + ethers.utils.formatEther(bal) + " RITL";
+                status.innerText = "Connected | Vault: " + ethers.utils.formatEther(bal) + " RITL";
+                status.style.color = "#00ff88";
             } catch (e) {
-                status.innerText = "Connection Error. Check Network.";
+                status.innerText = "Network Busy. Please refresh the page.";
+                status.style.color = "red";
             }
         }
         init();
@@ -78,24 +96,26 @@
             const btn = document.getElementById('claimBtn');
             const status = document.getElementById('status');
             
-            if(!ethers.utils.isAddress(dest)) return alert("Invalid Address!");
+            if(!ethers.utils.isAddress(dest)) return alert("Please enter a valid wallet address!");
 
             try {
-                btn.disabled = true; btn.innerText = "SENDING...";
-                const provider = new ethers.providers.JsonRpcProvider(RPC);
+                btn.disabled = true; btn.innerText = "DISPATCHING...";
+                const provider = await getProvider();
                 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 
                 const tx = await wallet.sendTransaction({
                     to: dest,
-                    value: ethers.utils.parseEther("0.005")
+                    value: ethers.utils.parseEther("0.005"),
+                    gasPrice: await provider.getGasPrice()
                 });
-                status.innerText = "Transaction Sent! Waiting...";
+                
+                status.innerText = "Energy Sent! HASH: " + tx.hash.substring(0,10) + "...";
                 await tx.wait();
-                alert("Success!");
+                alert("The Ritual was Successful! 0.005 RITL Sent.");
                 location.reload();
             } catch (e) {
-                alert("Error: Check your wallet balance.");
-                btn.disabled = false; btn.innerText = "RETRY";
+                alert("Error: Insufficient funds in the master wallet or Network error.");
+                btn.disabled = false; btn.innerText = "RETRY RITUAL";
             }
         }
     </script>
