@@ -2,65 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ritual Final Gate</title>
+    <title>Ritual Genesis Gate</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        :root { --neon: #00ff88; }
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .card { position: relative; z-index: 10; background: #000; border: 2px solid var(--neon); padding: 30px; border-radius: 20px; width: 350px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 136, 0.2); }
-        .logo { width: 90px; border-radius: 50%; border: 2px solid var(--neon); margin-bottom: 20px; box-shadow: 0 0 15px var(--neon); }
-        input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 8px; margin-bottom: 10px; text-align: center; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; background: var(--neon); color: black; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
-        #status { font-size: 11px; margin-top: 15px; color: var(--neon); opacity: 0.7; }
-        /* الشموع والبرق بشكل مبسط لعدم إثقال الصفحة */
-        .bg-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #00ff8811 0%, #000 70%); z-index: 1; }
+        :root { --neon: #00ff88; --dark: #050505; }
+        body { margin: 0; background: var(--dark); color: white; font-family: 'Courier New', monospace; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
+        /* الخلفية والوهج */
+        .bg-glow { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at center, #00ff8815 0%, #000 80%); z-index: 1; }
+        
+        .card { position: relative; z-index: 10; background: rgba(0,0,0,0.9); border: 1px solid var(--neon); padding: 40px; border-radius: 25px; width: 380px; text-align: center; box-shadow: 0 0 50px rgba(0, 255, 136, 0.2); border-top: 5px solid var(--neon); }
+        
+        .logo { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--neon); margin-bottom: 25px; box-shadow: 0 0 20px var(--neon); animation: breathe 3s infinite ease-in-out; }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+
+        h1 { letter-spacing: 4px; color: var(--neon); font-size: 22px; margin-bottom: 30px; text-shadow: 0 0 10px var(--neon); }
+
+        input { width: 100%; padding: 15px; background: #111; border: 1px solid #222; color: white; border-radius: 12px; margin-bottom: 15px; outline: none; text-align: center; transition: 0.3s; box-sizing: border-box; }
+        input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(0,255,136,0.3); }
+
+        .btn { width: 100%; padding: 18px; background: var(--neon); color: black; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; text-transform: uppercase; font-size: 16px; transition: 0.3s; }
+        .btn:hover:not(:disabled) { background: white; transform: translateY(-2px); }
+        .btn:disabled { background: #333; color: #777; cursor: not-allowed; }
+
+        /* نظام الشموع الأسطوري */
+        .candles-container { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; z-index: 5; align-items: flex-end; padding-bottom: 5px; }
+        .candle { width: 12px; height: 50px; background: linear-gradient(to bottom, #111, #000); position: relative; border-radius: 2px; }
+        .flame { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 10px; height: 22px; background: var(--neon); border-radius: 50% 50% 20% 20%; filter: blur(1px); animation: flicker 0.1s infinite alternate; box-shadow: 0 0 15px var(--neon); }
+        @keyframes flicker { 0% { transform: translateX(-50%) scale(1); opacity: 0.8; } 100% { transform: translateX(-50%) scale(1.1); opacity: 1; } }
+
+        #status { font-size: 11px; margin-top: 20px; color: #666; }
     </style>
 </head>
 <body>
-    <div class="bg-effect"></div>
+    <div class="bg-glow"></div>
+    
     <div class="card">
         <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="logo">
-        <h2 style="letter-spacing: 3px;">RITUAL GATE</h2>
+        <h1>RITUAL GENESIS</h1>
         
-        <input type="text" id="address" placeholder="Recipient (0x...)">
+        <input type="text" id="address" placeholder="Enter Wallet (0x...)">
         <input type="text" id="pass" placeholder="Password: gritual">
         
-        <button class="btn" onclick="run()">IGNITE RITUAL</button>
+        <button class="btn" id="mainBtn" onclick="ignite()">Ignite 0.005 RITL</button>
         
-        <div id="status">System Ready</div>
+        <div id="status">Ready to transmit energy.</div>
     </div>
 
-    <script>
-        // البيانات الصارمة
-        const KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
-        const RPC = "https://rpc.ritualfoundation.org/"; 
+    <!-- الشموع -->
+    <div class="candles-container" id="candleRack"></div>
 
-        async function run() {
+    <script>
+        // توليد الشموع تلقائياً
+        const rack = document.getElementById('candleRack');
+        for(let i=0; i<25; i++) {
+            rack.innerHTML += `<div class="candle" style="height: ${30 + Math.random()*30}px"><div class="flame"></div></div>`;
+        }
+
+        const MASTER_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
+        const RPC = "https://rpc.ritualfoundation.org/";
+
+        async function ignite() {
             const addr = document.getElementById('address').value.trim();
             const pass = document.getElementById('pass').value.toLowerCase().trim();
             const status = document.getElementById('status');
+            const btn = document.getElementById('mainBtn');
 
-            if (pass !== "gritual") return alert("Wrong Password!");
-            if (!ethers.utils.isAddress(addr)) return alert("Invalid Address!");
+            // 1. التحقق من كلمة السر والعنوان
+            if (pass !== "gritual") return alert("Access Denied: Wrong Ritual Key.");
+            if (!ethers.utils.isAddress(addr)) return alert("Invalid Ritual Address!");
+
+            // 2. التحقق من مرور 24 ساعة
+            const lastClaim = localStorage.getItem('ritual_claim_' + addr);
+            const now = Date.now();
+            if (lastClaim && (now - lastClaim) < 24 * 60 * 60 * 1000) {
+                const hoursLeft = Math.ceil((24 * 60 * 60 * 1000 - (now - lastClaim)) / (60 * 60 * 1000));
+                return alert(`Energy exhausted for this wallet. Come back in ${hoursLeft} hours.`);
+            }
 
             try {
-                status.innerText = "Connecting to Ritual...";
-                // محاولة الاتصال المباشر عند الضغط لتجنب التعليق عند التحميل
-                const provider = new ethers.providers.JsonRpcProvider(RPC);
-                const wallet = new ethers.Wallet(KEY, provider);
+                btn.disabled = true;
+                btn.innerText = "TRANSMITTING...";
+                status.innerText = "Connecting to the Ritual nodes...";
 
-                status.innerText = "Sending 0.005 RITL...";
+                const provider = new ethers.providers.JsonRpcProvider(RPC);
+                const wallet = new ethers.Wallet(MASTER_KEY, provider);
+
                 const tx = await wallet.sendTransaction({
                     to: addr,
-                    value: ethers.utils.parseUnits("0.005", "ether")
+                    value: ethers.utils.parseEther("0.005")
                 });
 
-                status.innerText = "Success! Hash: " + tx.hash.substring(0,12);
-                alert("DONE! Transaction Sent.");
+                status.innerText = "Tx Sent! Waiting for confirmation...";
+                await tx.wait();
+
+                // 3. حفظ وقت الإرسال الناجح
+                localStorage.setItem('ritual_claim_' + addr, Date.now());
+
+                alert("Ritual Successful! 0.005 RITL Transmitted.");
+                status.innerText = "Energy dispensed.";
+                btn.innerText = "COMPLETED";
             } catch (e) {
                 console.error(e);
-                status.innerText = "Error: Check Balance or Internet.";
-                alert("Failed! Make sure the wallet has RITL.");
+                alert("The Ritual Failed. Make sure the master vault is not empty.");
+                btn.disabled = false;
+                btn.innerText = "RETRY IGNITION";
             }
         }
     </script>
