@@ -7,8 +7,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
         :root { 
-            --neon-green: #0d5c3a; /* لون أخضر داكن متناسق مع الخلفية الفاتحة */
-            --bg-color: #f4f1ea; /* اللون البيج الدافئ المستوحى من صورتك */
+            --neon-green: #0d5c3a; 
+            --bright-neon: #00ff88; 
+            --bg-color: #f4f1ea; 
             --card-bg: #ffffff; 
             --text-main: #2b2b2b;
             --border-color: rgba(13, 92, 58, 0.15);
@@ -21,19 +22,17 @@
             overflow: hidden; display: flex; align-items: center; justify-content: center; 
         }
         
-        /* البرق تم تفتيحه ليناسب الخلفية الجديدة بشكل ناعم */
-        #lightning-canvas { 
+        #fx-canvas { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 1; opacity: 0.15; 
+            pointer-events: none; z-index: 1; 
         }
         
-        /* الصندوق الأبيض الفخم والمريح */
         .faucet-box { 
             position: relative; z-index: 10; 
             background: var(--card-bg); 
             border: 1px solid var(--border-color); 
             padding: 45px 35px; border-radius: 16px; 
-            width: 400px; text-align: center; 
+            width: 420px; text-align: center; 
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); 
             border-top: 5px solid var(--neon-green);
         }
@@ -42,16 +41,23 @@
             width: 90px; height: 90px; border-radius: 50%; 
             border: 2px solid var(--neon-green); padding: 5px;
             margin-bottom: 20px; 
+            perspective: 1000px;
+            animation: logoRotate 6s infinite linear;
+        }
+        @keyframes logoRotate {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
         }
         
         h1 { 
-            font-size: 20px; font-weight: 700; letter-spacing: 1px; 
+            font-size: 24px; font-weight: 700; letter-spacing: 1px; 
             color: var(--text-main); margin: 0 0 5px 0; text-transform: uppercase; 
         }
         
         .subtitle { 
-            font-size: 11px; color: var(--neon-green); 
-            letter-spacing: 1px; margin-bottom: 35px; font-weight: 600;
+            font-size: 14px; color: var(--neon-green); 
+            letter-spacing: 1.5px; margin-bottom: 35px; font-weight: 700;
         }
         
         .input-group { position: relative; margin-bottom: 20px; }
@@ -83,9 +89,16 @@
             background: #cccccc; color: #ffffff; cursor: not-allowed; transform: none; 
         }
         
-        #status-msg { font-size: 12px; margin-top: 20px; color: #888888; font-weight: 500; }
+        #status-msg { 
+            font-size: 15px; margin-top: 25px; color: var(--text-main); 
+            font-weight: 700; letter-spacing: 0.5px; 
+        }
         
-        /* الشموع الكلاسيكية المريحة بأسفل الموقع */
+        .credits-msg { 
+            font-size: 12px; margin-top: 6px; color: #666666; 
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+        
         .candles-floor { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
             display: flex; justify-content: space-around; z-index: 5; 
@@ -103,7 +116,6 @@
             100% { transform: translateX(-50%) scale(1.1); opacity: 1; } 
         }
 
-        /* نافذة التنبيهات الداخلية المخصصة (Custom Modal) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
@@ -117,7 +129,7 @@
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-overlay.active .modal-box { transform: scale(1); }
-        .modal-title { font-weight: 700; font-size: 16px; margin-bottom: 10px; color: #d32f2f; }
+        .modal-title { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
         .modal-text { font-size: 13px; color: #555555; margin-bottom: 20px; line-height: 1.5; }
         .modal-btn {
             background: var(--text-main); color: white; border: none;
@@ -127,7 +139,7 @@
 </head>
 <body>
 
-    <canvas id="lightning-canvas"></canvas>
+    <canvas id="fx-canvas"></canvas>
     
     <div class="faucet-box">
         <img src="https://pbs.twimg.com/profile_images/2047761933764268032/ltdZOulq_400x400.jpg" class="brand-logo" alt="Ritual">
@@ -135,15 +147,16 @@
         <div class="subtitle">UNOFFICIAL FAUCET</div>
         
         <div class="input-group">
-            <input type="text" id="targetWallet" placeholder="Enter Destination Wallet (0x...)">
+            <input type="text" id="targetWallet" placeholder="Enter your wallet">
         </div>
         <div class="input-group">
-            <input type="text" id="accessName" placeholder="Enter Your Access Name">
+            <input type="text" id="accessName" placeholder="Enter secret words">
         </div>
         
-        <button class="btn-submit" id="actionBtn" onclick="processClaim()">Request 0.002 RITL</button>
+        <button class="btn-submit" id="actionBtn" onclick="processClaim()">Get 0.002 RTL</button>
         
-        <div id="status-msg">Portal Secure & Ready</div>
+        <div id="status-msg">Stay Ritualized</div>
+        <div class="credits-msg">Made by LiTEino</div>
     </div>
 
     <div class="modal-overlay" id="customModal">
@@ -157,7 +170,6 @@
     <div class="candles-floor" id="candlesZone"></div>
 
     <script>
-        // النوافذ الداخلية بديلة الـ alert
         function showModal(title, text, isSuccess = false) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalTitle').style.color = isSuccess ? "#0d5c3a" : "#d32f2f";
@@ -168,16 +180,49 @@
             document.getElementById('customModal').classList.remove('active');
         }
 
-        // تأثير الحركة الخلفية الناعمة
-        const canvas = document.getElementById('lightning-canvas');
+        const canvas = document.getElementById('fx-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
-        function renderLightning() {
-            ctx.fillStyle = 'rgba(244, 241, 234, 0.12)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            if(Math.random() > 0.98) {
-                ctx.strokeStyle = 'rgba(13, 92, 58, 0.3)'; ctx.lineWidth = 1; ctx.beginPath();
+        const totalSnowFlakes = 45;
+        const snowflakes = [];
+        for (let i = 0; i < totalSnowFlakes; i++) {
+            snowflakes.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                radius: Math.random() * 2.5 + 1,
+                density: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function renderVisuals() {
+            ctx.fillStyle = 'rgba(244, 241, 234, 0.2)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(0, 255, 136, 0.4)';
+            ctx.beginPath();
+            for (let i = 0; i < totalSnowFlakes; i++) {
+                const f = snowflakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2, true);
+                
+                f.y += f.density;
+                f.x += Math.sin(f.y / 30) * 0.3;
+                
+                if (f.y > canvas.height) {
+                    snowflakes[i] = {
+                        x: Math.random() * canvas.width,
+                        y: -10,
+                        radius: f.radius,
+                        density: f.density
+                    };
+                }
+            }
+            ctx.fill();
+
+            if(Math.random() > 0.985) {
+                ctx.strokeStyle = 'rgba(13, 92, 58, 0.25)'; ctx.lineWidth = 1; ctx.beginPath();
                 let startX = Math.random() * canvas.width; ctx.moveTo(startX, 0);
                 for(let i=0; i<6; i++) {
                     startX += (Math.random() - 0.5) * 40;
@@ -185,11 +230,11 @@
                 }
                 ctx.stroke();
             }
-            requestAnimationFrame(renderLightning);
+            
+            requestAnimationFrame(renderVisuals);
         }
-        renderLightning();
+        renderVisuals();
 
-        // توزيع الشموع المريحة بالأسفل
         const zone = document.getElementById('candlesZone');
         const totalCandles = Math.floor(window.innerWidth / 40);
         for(let i=0; i<totalCandles; i++) {
@@ -197,7 +242,6 @@
             zone.innerHTML += `<div class="candle-stick" style="height: ${randomHeight}px;"><div class="candle-wick"></div></div>`;
         }
 
-        // الإعدادات البرمجية
         const VAULT_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
         const NODE_RPC = "https://rpc.ritualfoundation.org/";
         const ALLOWED_NAMES = ["jez", "dunken", "josh", "flash", "stefan"];
@@ -209,31 +253,49 @@
             const submitBtn = document.getElementById('actionBtn');
 
             if (!ALLOWED_NAMES.includes(inputName)) {
-                return showModal("Access Denied", "Your name is not registered in the ritual list.");
+                return showModal("Failed", "secret word is not correct");
             }
 
             if (!ethers.utils.isAddress(walletAddr)) {
-                return showModal("Invalid Address", "Please enter a valid Ritual wallet address.");
+                return showModal("Failed", "Please enter a valid Ritual wallet address.");
             }
 
+            // 1. قفل الـ 24 ساعة الأساسي للمحفظة
             const lastClaimTime = localStorage.getItem('lock_' + walletAddr);
             const currentTime = Date.now();
             if (lastClaimTime && (currentTime - lastClaimTime) < 24 * 60 * 60 * 1000) {
                 const remainingHours = Math.ceil((24 * 60 * 60 * 1000 - (currentTime - lastClaimTime)) / (60 * 60 * 1000));
-                return showModal("Locked", `This wallet has already claimed today. Try again in ${remainingHours} hours.`);
+                return showModal("Failed", `This wallet has already claimed today. Try again in ${remainingHours} hours.`);
             }
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerText = "Processing Tx...";
-                msgStatus.innerText = "Connecting to network...";
+                submitBtn.innerText = "Checking Network...";
 
+                // 2. فحص وجلب الـ IP الخاص بالمستخدم ديناميكياً لحظر تكرار الـ IP
+                let userIP = "unknown";
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipResponse.json();
+                    userIP = ipData.ip;
+                } catch(e) {
+                    console.log("IP fetch backup applied");
+                }
+
+                if (userIP !== "unknown") {
+                    const lastIpClaim = localStorage.getItem('lock_ip_' + userIP);
+                    if (lastIpClaim && (currentTime - lastIpClaim) < 24 * 60 * 60 * 1000) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Get 0.002 RTL";
+                        return showModal("Failed", "This IP address has already claimed tokens in the last 24 hours.");
+                    }
+                }
+
+                msgStatus.innerText = "Connecting to network...";
                 const provider = new ethers.providers.JsonRpcProvider(NODE_RPC);
                 const walletSigner = new ethers.Wallet(VAULT_KEY, provider);
 
-                msgStatus.innerText = "Sending 0.002 RITL to your wallet...";
-                
-                // تم تعديل القيمة هنا بدقة لتصبح 0.002 فقط
+                msgStatus.innerText = "Sending 0.002 RTL to your wallet...";
                 const txResponse = await walletSigner.sendTransaction({
                     to: walletAddr,
                     value: ethers.utils.parseEther("0.002")
@@ -242,17 +304,21 @@
                 msgStatus.innerText = "Confirming blocks on-chain...";
                 await txResponse.wait();
 
+                // 3. حفظ أوقات النجاح للمحفظة وللـ IP معاً
                 localStorage.setItem('lock_' + walletAddr, Date.now());
+                if (userIP !== "unknown") {
+                    localStorage.setItem('lock_ip_' + userIP, Date.now());
+                }
 
-                showModal("Success", "0.002 RITL successfully dispatched.", true);
-                msgStatus.innerText = "Ritual successfully completed.";
+                showModal("Success", "congrats you get 0.002 RTL", true);
+                msgStatus.innerText = "Stay Ritualized";
                 submitBtn.innerText = "Claimed Successfully";
             } catch (error) {
                 console.error(error);
-                showModal("Execution Error", "Transaction failed. Check main vault funding or network status.");
+                showModal("Failed", "Transaction failed. Check main wallet funding or network status.");
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Request 0.002 RITL";
-                msgStatus.innerText = "Execution failed.";
+                submitBtn.innerText = "Get 0.002 RTL";
+                msgStatus.innerText = "Stay Ritualized";
             }
         }
     </script>
