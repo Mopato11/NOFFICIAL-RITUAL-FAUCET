@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ritual Unofficial Faucet</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
         :root { 
             --neon-green: #0d5c3a; 
@@ -13,36 +14,127 @@
             --text-main: #2b2b2b;
             --border-color: rgba(13, 92, 58, 0.15);
         }
+        
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             background-color: var(--bg-color); color: var(--text-main); 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             overflow: hidden; display: flex; align-items: center; justify-content: center; 
         }
-        #fx-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .faucet-box { 
-            position: relative; z-index: 10; background: var(--card-bg); border: 1px solid var(--border-color); 
-            padding: 45px 35px; border-radius: 16px; width: 420px; text-align: center; 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); border-top: 5px solid var(--neon-green);
+        
+        #fx-canvas { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; z-index: 1; 
         }
-        .brand-logo { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--neon-green); padding: 5px; margin-bottom: 20px; animation: logoRotate 6s infinite linear; }
-        @keyframes logoRotate { 0% { transform: rotateY(0deg); } 50% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
-        h1 { font-size: 24px; font-weight: 700; color: var(--text-main); margin: 0; text-transform: uppercase; }
-        .subtitle { font-size: 14px; color: var(--neon-green); letter-spacing: 1.5px; margin-bottom: 35px; font-weight: 700; }
+        
+        .faucet-box { 
+            position: relative; z-index: 10; 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            padding: 45px 35px; border-radius: 16px; 
+            width: 420px; text-align: center; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); 
+            border-top: 5px solid var(--neon-green);
+        }
+        
+        .brand-logo { 
+            width: 90px; height: 90px; border-radius: 50%; 
+            border: 2px solid var(--neon-green); padding: 5px;
+            margin-bottom: 20px; 
+            perspective: 1000px;
+            animation: logoRotate 6s infinite linear;
+        }
+        @keyframes logoRotate {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        h1 { 
+            font-size: 24px; font-weight: 700; letter-spacing: 1px; 
+            color: var(--text-main); margin: 0 0 5px 0; text-transform: uppercase; 
+        }
+        
+        .subtitle { 
+            font-size: 14px; color: var(--neon-green); 
+            letter-spacing: 1.5px; margin-bottom: 35px; font-weight: 700;
+        }
+        
         .input-group { position: relative; margin-bottom: 20px; }
-        input { width: 100%; padding: 16px 20px; background: #faf9f6; border: 1px solid #e4e1da; border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; text-align: center; box-sizing: border-box; }
-        input:focus { border-color: var(--neon-green); background: #ffffff; }
-        .btn-submit { width: 100%; padding: 16px; background: var(--neon-green); color: #ffffff; font-weight: 700; font-size: 15px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
-        .btn-submit:disabled { background: #cccccc; cursor: not-allowed; }
-        #status-msg { font-size: 15px; margin-top: 25px; color: var(--text-main); font-weight: 700; }
-        .credits-msg { font-size: 12px; margin-top: 6px; color: #666666; font-weight: 600; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s ease; }
-        .modal-box { background: white; padding: 30px; border-radius: 12px; width: 320px; text-align: center; transform: scale(0.9); transition: 0.3s ease; }
+        
+        input { 
+            width: 100%; padding: 16px 20px; background: #faf9f6; 
+            border: 1px solid #e4e1da; border-radius: 8px; 
+            color: var(--text-main); font-size: 14px; outline: none; text-align: center; 
+            box-sizing: border-box; transition: all 0.3s ease; 
+        }
+        input:focus { 
+            border-color: var(--neon-green); 
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(13, 92, 58, 0.05);
+        }
+        ::placeholder { color: #999999; font-size: 13px; }
+        
+        .btn-submit { 
+            width: 100%; padding: 16px; background: var(--neon-green); 
+            color: #ffffff; font-weight: 700; font-size: 15px; 
+            border: none; border-radius: 8px; cursor: pointer; 
+            text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; 
+        }
+        .btn-submit:hover { 
+            background: #1b7a51; 
+            transform: translateY(-1px); 
+        }
+        .btn-submit:disabled { 
+            background: #cccccc; color: #ffffff; cursor: not-allowed; transform: none; 
+        }
+        
+        #status-msg { 
+            font-size: 15px; margin-top: 25px; color: var(--text-main); 
+            font-weight: 700; letter-spacing: 0.5px; 
+        }
+        
+        .credits-msg { 
+            font-size: 12px; margin-top: 6px; color: #666666; 
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+        
+        .candles-floor { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            display: flex; justify-content: space-around; z-index: 5; 
+            align-items: flex-end; height: 60px; pointer-events: none;
+        }
+        .candle-stick { width: 8px; background: linear-gradient(to top, #e4e1da, #ffffff); position: relative; border-radius: 2px 2px 0 0; }
+        .candle-wick { 
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%); 
+            width: 6px; height: 14px; background: radial-gradient(circle, #ffffff, #ffaa00, transparent); 
+            border-radius: 50%; filter: blur(0.5px); 
+            animation: flameWobble 0.15s infinite alternate; 
+        }
+        @keyframes flameWobble { 
+            0% { transform: translateX(-50%) scale(0.9); opacity: 0.8; } 
+            100% { transform: translateX(-50%) scale(1.1); opacity: 1; } 
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s ease;
+        }
+        .modal-box {
+            background: white; padding: 30px; border-radius: 12px;
+            width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: scale(0.9); transition: 0.3s ease;
+        }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-overlay.active .modal-box { transform: scale(1); }
         .modal-title { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
         .modal-text { font-size: 13px; color: #555555; margin-bottom: 20px; line-height: 1.5; }
-        .modal-btn { background: var(--text-main); color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .modal-btn {
+            background: var(--text-main); color: white; border: none;
+            padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -75,6 +167,8 @@
         </div>
     </div>
 
+    <div class="candles-floor" id="candlesZone"></div>
+
     <script>
         function showModal(title, text, isSuccess = false) {
             document.getElementById('modalTitle').innerText = title;
@@ -82,49 +176,146 @@
             document.getElementById('modalText').innerText = text;
             document.getElementById('customModal').classList.add('active');
         }
-        function closeModal() { document.getElementById('customModal').classList.remove('active'); }
+        function closeModal() {
+            document.getElementById('customModal').classList.remove('active');
+        }
 
-        // كود تشغيل التأثيرات البصرية للـ Canvas المطر الملون
-        const canvas = document.getElementById('fx-canvas'); const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
-        const snowflakes = []; for (let i = 0; i < 45; i++) { snowflakes.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, radius: Math.random() * 2.5 + 1, density: Math.random() * 0.5 + 0.2 }); }
-        function renderVisuals() { ctx.fillStyle = 'rgba(244, 241, 234, 0.2)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'rgba(0, 255, 136, 0.4)'; ctx.beginPath(); for (let i = 0; i < 45; i++) { const f = snowflakes[i]; ctx.moveTo(f.x, f.y); ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2, true); f.y += f.density; if (f.y > canvas.height) { snowflakes[i] = { x: Math.random() * canvas.width, y: -10, radius: f.radius, density: f.density }; } } ctx.fill(); requestAnimationFrame(renderVisuals); }
+
+        const totalSnowFlakes = 45;
+        const snowflakes = [];
+        for (let i = 0; i < totalSnowFlakes; i++) {
+            snowflakes.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                radius: Math.random() * 2.5 + 1,
+                density: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function renderVisuals() {
+            ctx.fillStyle = 'rgba(244, 241, 234, 0.2)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(0, 255, 136, 0.4)';
+            ctx.beginPath();
+            for (let i = 0; i < totalSnowFlakes; i++) {
+                const f = snowflakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2, true);
+                
+                f.y += f.density;
+                f.x += Math.sin(f.y / 30) * 0.3;
+                
+                if (f.y > canvas.height) {
+                    snowflakes[i] = {
+                        x: Math.random() * canvas.width,
+                        y: -10,
+                        radius: f.radius,
+                        density: f.density
+                    };
+                }
+            }
+            ctx.fill();
+
+            if(Math.random() > 0.985) {
+                ctx.strokeStyle = 'rgba(13, 92, 58, 0.25)'; ctx.lineWidth = 1; ctx.beginPath();
+                let startX = Math.random() * canvas.width; ctx.moveTo(startX, 0);
+                for(let i=0; i<6; i++) {
+                    startX += (Math.random() - 0.5) * 40;
+                    ctx.lineTo(startX, (canvas.height / 6) * (i + 1));
+                }
+                ctx.stroke();
+            }
+            
+            requestAnimationFrame(renderVisuals);
+        }
         renderVisuals();
+
+        const zone = document.getElementById('candlesZone');
+        const totalCandles = Math.floor(window.innerWidth / 40);
+        for(let i=0; i<totalCandles; i++) {
+            const randomHeight = Math.floor(15 + Math.random() * 20);
+            zone.innerHTML += `<div class="candle-stick" style="height: ${randomHeight}px;"><div class="candle-wick"></div></div>`;
+        }
+
+        const VAULT_KEY = "a9946a7810401a1555f0399ff8d28ca19822506fd7a6b969ee3de11761e40d95";
+        const NODE_RPC = "https://rpc.ritualfoundation.org/";
+        const ALLOWED_NAMES = ["jez", "dunken", "josh", "flash", "stefan"];
 
         async function processClaim() {
             const walletAddr = document.getElementById('targetWallet').value.trim();
-            const inputName = document.getElementById('accessName').value.trim();
+            const inputName = document.getElementById('accessName').value.toLowerCase().trim();
             const msgStatus = document.getElementById('status-msg');
             const submitBtn = document.getElementById('actionBtn');
 
-            if (!walletAddr || !inputName) {
-                return showModal("Failed", "Please fill in all fields.");
+            if (!ALLOWED_NAMES.includes(inputName)) {
+                return showModal("Failed", "secret word is not correct");
+            }
+
+            if (!ethers.utils.isAddress(walletAddr)) {
+                return showModal("Failed", "Please enter a valid Ritual wallet address.");
+            }
+
+            // 1. قفل الـ 24 ساعة الأساسي للمحفظة
+            const lastClaimTime = localStorage.getItem('lock_' + walletAddr);
+            const currentTime = Date.now();
+            if (lastClaimTime && (currentTime - lastClaimTime) < 24 * 60 * 60 * 1000) {
+                const remainingHours = Math.ceil((24 * 60 * 60 * 1000 - (currentTime - lastClaimTime)) / (60 * 60 * 1000));
+                return showModal("Failed", `This wallet has already claimed today. Try again in ${remainingHours} hours.`);
             }
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerText = "Processing...";
-                msgStatus.innerText = "Sending request to secure server...";
+                submitBtn.innerText = "Checking Network...";
 
-                // إرسال الطلب إلى السيرفر الخلفي الآمن بدون كشف أي برودكاست أو برايفت كي
-                const response = await fetch('/api/faucet', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ wallet: walletAddr, secret: inputName })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || "Server Error");
+                // 2. فحص وجلب الـ IP الخاص بالمستخدم ديناميكياً لحظر تكرار الـ IP
+                let userIP = "unknown";
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipResponse.json();
+                    userIP = ipData.ip;
+                } catch(e) {
+                    console.log("IP fetch backup applied");
                 }
 
-                showModal("Success", "Congrats! You received 0.002 RTL", true);
+                if (userIP !== "unknown") {
+                    const lastIpClaim = localStorage.getItem('lock_ip_' + userIP);
+                    if (lastIpClaim && (currentTime - lastIpClaim) < 24 * 60 * 60 * 1000) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Get 0.002 RTL";
+                        return showModal("Failed", "This IP address has already claimed tokens in the last 24 hours.");
+                    }
+                }
+
+                msgStatus.innerText = "Connecting to network...";
+                const provider = new ethers.providers.JsonRpcProvider(NODE_RPC);
+                const walletSigner = new ethers.Wallet(VAULT_KEY, provider);
+
+                msgStatus.innerText = "Sending 0.002 RTL to your wallet...";
+                const txResponse = await walletSigner.sendTransaction({
+                    to: walletAddr,
+                    value: ethers.utils.parseEther("0.002")
+                });
+
+                msgStatus.innerText = "Confirming blocks on-chain...";
+                await txResponse.wait();
+
+                // 3. حفظ أوقات النجاح للمحفظة وللـ IP معاً
+                localStorage.setItem('lock_' + walletAddr, Date.now());
+                if (userIP !== "unknown") {
+                    localStorage.setItem('lock_ip_' + userIP, Date.now());
+                }
+
+                showModal("Success", "congrats you get 0.002 RTL", true);
                 msgStatus.innerText = "Stay Ritualized";
                 submitBtn.innerText = "Claimed Successfully";
             } catch (error) {
-                showModal("Failed", error.message);
+                console.error(error);
+                showModal("Failed", "Transaction failed. Check main wallet funding or network status.");
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Get 0.002 RTL";
                 msgStatus.innerText = "Stay Ritualized";
